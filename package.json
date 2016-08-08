@@ -1,0 +1,52 @@
+{
+  "name": "qatest",
+  "version": "1.0.0",
+  "description": "boilerplate for express qa test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/html5col/QATest-for-node-express-framework.git"
+  },
+  "keywords": [
+    "qa",
+    "test"
+  ],
+  "author": "Frank Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/html5col/QATest-for-node-express-framework/issues"
+  },
+  "homepage": "https://github.com/html5col/QATest-for-node-express-framework#readme",
+  "dependencies": {
+<<<<<<< HEAD
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+=======
+    "body-parser": "^1.15.2",
+>>>>>>> 564b1f26fec79635f706c636fa5eacd82a815a9c
+    "express": "^4.14.0",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.14.0",
+    "formidable": "^1.0.17",
+    "method-override": "^2.3.6",
+    "mongoose": "^4.5.8",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-cafe-mocha": "^0.1.13",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-exec": "^1.0.0",
+    "mocha": "^2.5.3",
+    "zombie": "^4.2.1"
+  }
+}

@@ -1,0 +1,15 @@
+<h1>request group rate</h1>
+<form>
+    <input type="hidden" name="referrer">
+    Name: <input type="text id="fieldName" name="name">
+    Email: <input type="email" name="email">
+    <input type="submit" value="submit">
+</form>
+
+<script>
+    window.onload = function(){
+        document.querySelector('input[name="referrer"]').value = document.referrer;
+        //document.referrer Returns the URI of the page that linked to this page.
+        alert(document.querySelector('input[name="referrer"]').value);
+    };
+</script>

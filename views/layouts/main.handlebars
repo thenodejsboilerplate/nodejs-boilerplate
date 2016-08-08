@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    {{#if showTests}}
+        <link rel="stylesheet" href="/vendor/mocha.css">
+    {{/if}}
+</head>
+<body>
+<li>
+    <a href="/about">about</a>
+    <a href="/">home</a>
+    <a href="/submit-info">form</a>
+    <a href="/login">login</a>
+    <a href="/logout">Logout</a>
+    <a href="/signup">Signup</a>
+</li>
+
+    {{#if message.length }}
+        <div class="alert alert-danger"> {{ message }} </div>
+    {{/if}}
+
+
+ {{{body}}}
+
+{{#if showTests}}
+    <div id="mocha"></div>
+    <script src="/vendor/mocha.js"></script>
+    <script src="/vendor/chai.js"></script>
+    <script>
+        mocha.ui("tdd");
+        var assert = chai.assert;
+    </script>
+    <script src="/js/page-test/tests-global.js"></script>
+
+    {{#if pageTestScript}}
+        <script src="{{pageTestScript}}"></script>
+    {{/if}}
+
+    <script>mocha.run();</script>
+{{/if}}
+</body>
+</html>
