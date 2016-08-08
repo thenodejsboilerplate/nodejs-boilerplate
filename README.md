@@ -1,6 +1,5 @@
 NodeJS Boilerplate
 ============
-#Nodejs Boilerplate with Authentication, QATest using passport&Express&Mongodb
 
 ##[Demo](coming soon)
 
