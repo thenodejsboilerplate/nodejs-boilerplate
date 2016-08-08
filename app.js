@@ -9,7 +9,6 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
 
-<<<<<<< HEAD
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var session      = require('express-session');
@@ -20,8 +19,6 @@ var User = require('./models/User');
 
 mongoose.connect(dbConfig.url);
 
-=======
->>>>>>> 564b1f26fec79635f706c636fa5eacd82a815a9c
 var app = express();
 app.set('port',process.env.PORT || 8000);
 app.set('env','development');
@@ -41,8 +38,6 @@ app.use(function(req,res,next){
     next();
 });
 //我们不希望测试一直进行，只在需要测试时显示，我们准备用用一些中间件在检测查询字符串中的test=1,它必须出现在我们所有路由前
-
-<<<<<<< HEAD
 
 
 
@@ -67,10 +62,9 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 var routes = require('./routes')(app,passport,User);
-=======
+
 //routes
 require('./routes/route.js')(app);
->>>>>>> 564b1f26fec79635f706c636fa5eacd82a815a9c
 
 //customize 404 page using middleware
 app.use(function(req,res,next){

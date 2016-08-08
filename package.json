@@ -22,14 +22,10 @@
   },
   "homepage": "https://github.com/html5col/QATest-for-node-express-framework#readme",
   "dependencies": {
-<<<<<<< HEAD
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.3",
-=======
-    "body-parser": "^1.15.2",
->>>>>>> 564b1f26fec79635f706c636fa5eacd82a815a9c
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.0",
@@ -38,6 +34,7 @@
     "mongoose": "^4.5.8",
     "morgan": "^1.7.0",
     "passport": "^0.3.2",
+    "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {

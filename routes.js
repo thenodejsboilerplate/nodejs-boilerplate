@@ -81,6 +81,30 @@ module.exports = function(app, passport,User) {
 
 
 
+// =====================================
+    // GOOGLE ROUTES =======================
+    // =====================================
+    // send to google to do the authentication
+    // profile gets us their basic information including their name
+    // email gets their emails
+    //../plus.login/ below is the recommended login scope providing access to social features. This scope implicitly includes the profile scope and also requests that your app be given access to:
+    // 1 the age range of the authenticated user
+	// 2 the list of circled people that the user has granted your app access to know
+	// 3 the methods for reading, writing and deleting app activities (moments) to Google on behalf of the user
+	// In addition, this scope enables cross-platform single sign-on.
+
+	    app.get('/auth/google', passport.authenticate('google', { scope : ['https://www.googleapis.com/auth/plus.login'] }));
+
+	    // the callback after google has authenticated the user
+	    app.get('/auth/google/callback',
+	            passport.authenticate('google', {
+	                    failureRedirect : '/login',
+	                    successRedirect : '/'
+	            })
+	            
+		);
+
+
 
 		app.get('/submit-info', function(req,res){
 		    var now = new Date();
