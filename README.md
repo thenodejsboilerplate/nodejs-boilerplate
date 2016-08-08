@@ -3,8 +3,8 @@ NodeJS Boilerplate
 
 ##[Demo](coming soon)
 
-User system in nodejs illustrating the use of **passport** in **express**, **handlebars** and **mongoose** environment
-together with front pages for login, signup and profile mock
+Boilerplate in nodejs illustrating the use of **NodeJs** using **passport**, **express**, **handlebars** and **mongoose** environment
+together with front pages for login, signup and profile mock, which can be used as a boilerplate in your app development
 
 QATest with:
 1, PAGE TESTS
