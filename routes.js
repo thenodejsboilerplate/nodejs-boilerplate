@@ -178,3 +178,14 @@ function isLoggedIn(req, res, next) {
     // if they aren't redirect them to the home page
     res.redirect('/');
 }
+
+
+// app.get('/no-layout',function(req,res){
+//     res.render('no-layout',{layout:null});//or layout:false
+// });
+//if you do not want to use layout
+
+// app.get('/custom-layout',function(req,res){
+//     res.render('custom-layout',{layout: 'custom'});
+// });
+//if you want another layout

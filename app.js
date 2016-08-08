@@ -63,8 +63,7 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 var routes = require('./routes')(app,passport,User);
 
-//routes
-require('./routes/route.js')(app);
+
 
 //customize 404 page using middleware
 app.use(function(req,res,next){
