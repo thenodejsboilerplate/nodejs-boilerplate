@@ -20,13 +20,13 @@ Technology
 ------------
 
 | On The Server | On The Client  | Test     |
-| ------------- | -------------- | Chai     |
+| ------------- | -------------- | -------- |
 | Express       | html5          | Mocha    |
 | handlebars    | grunt          | Zombie   |
-| Passport      | sass           |
-|               |                | 
-|               |                | 
-|               |                | 
+| Passport      | sass           | Chai     |
+|               |                |          |
+|               |                |          |
+|               |                |          |
 
 
 Installation
