@@ -31,7 +31,7 @@ Technology
 Installation
 -------------
 
-1. git clone https://github.com/html5col/Nodejs-Boilerplate.git
+1. git clone https://github.com/thenodejsboilerplate/nodejs-boilerplate.git
 2. cd Nodejs-Boilerplate
 3. npm install
 4. create or modify config.js file under config folder
