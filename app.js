@@ -9,9 +9,11 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
 
-var morgan       = require('morgan');
+//var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var session      = require('express-session');
+
+var exphbs  = require('express-handlebars');
 
 
 
@@ -24,10 +26,10 @@ mongoose.connect(dbConfig.url);
 
 var app = express();
 app.set('port',process.env.PORT || 8000);
-app.set('env','development');
+//app.set('env','development');
 
 //express-handlebar
-var exphbs  = require('express-handlebars');
+
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 //This view engine adds back the concept of "layout", which was removed in Express 3.x. It can be configured with a path to the layouts directory, by default it's set to "views/layouts/".
 app.set('view engine', 'handlebars');
@@ -48,7 +50,23 @@ app.use(function(req,res,next){
 
 
 // set up our express application
-app.use(morgan('dev')); // log every request to the console
+switch(app.get('env')){
+	//run command:" NODE_ENV=production node app.js " if you wanna test the logging in the production envionment
+	case 'development':
+	  //concrete and colorful logging , log every request to the console
+	  app.use(require('morgan')('dev'));
+	  break;
+	case 'production':
+	   //express-logger support logging loop(duplicate every 24 hours and begin new logs to prevent log files to become big forever)
+	   app.use(require('express-logger')({
+	   	   path: __dirname + '/log/requests.log'
+	   }));
+	   break;
+}
+
+
+
+
 app.use(cookieParser()); // read cookies (needed for auth)
 /******form part start：  get information from html forms*******/
 app.use(bodyParser.json());

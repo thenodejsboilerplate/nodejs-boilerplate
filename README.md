@@ -4,7 +4,7 @@ NodeJS Boilerplate
 ##[Demo](coming soon)
 
 Boilerplate in nodejs illustrating the use of **NodeJs** using **passport**, **express**, **handlebars** and **mongoose** environment
-together with front pages for login, signup and profile mock, which can be used as a boilerplate in your app development
+together with front pages for login, signup and profile mock, which can be used as a boilerplate in your app development! Some Inspired by WEB DEVELOPMENT WITH NODE AND EXPRESS By Ethan Brown
 
 QATest with:
 ------------
