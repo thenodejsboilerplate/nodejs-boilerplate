@@ -13,9 +13,12 @@ var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var session      = require('express-session');
 
+
+
 var dbConfig = require('./config/database');
 require('./config/passport')(passport); // pass passport for configuration
 var User = require('./models/User');
+
 
 mongoose.connect(dbConfig.url);
 

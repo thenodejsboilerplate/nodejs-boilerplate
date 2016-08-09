@@ -75,25 +75,29 @@ module.exports = function(passport) {
                         if (user) {
                             return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                         } else {
+                              if(passwordConfirmation === password){
+                                             // if there is no user with that email
+                                            // create the user
+                                            let newUser = new User();
+                                            
+                                            // set the user's local credentials
+                                            newUser.local.email    = email;
+                                            newUser.local.password = newUser.generateHash(password); 
+
+                                            newUser.local.username    = username;
+
+                                            // save the user
+                                            newUser.save(function(err) {
+                                                if (err){throw err;}
+                                                return done(null, newUser, req.flash('signupMessage', 'Congratulations,You Signup successfully!'));
+                                            });   
+                              }else { 
+                                return done(null, false, req.flash('signupMessage', 'Passport does not match!')); 
+                              }
                                         
-                                        if(password===passwordConfirmation){
-                                                 // if there is no user with that email
-                                                // create the user
-                                                var newUser            = new User();
-                                                // set the user's local credentials
-                                                newUser.local.email    = email;
-                                                newUser.local.password = newUser.generateHash(password); 
-
-                                                newUser.local.username    = username;
-
-                                                // save the user
-                                                newUser.save(function(err) {
-                                                    if (err){throw err;}
-                                                    return done(null, newUser);
-                                                });                                        
-                                        }else{
-                                            return done(null, false, req.flash('signupMessage', 'Passport does not match!'));
-                                        }
+                            
+                                     
+                                      
 
 
                         }

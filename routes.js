@@ -1,6 +1,10 @@
 // app/routes.js
 "use strict";
-var flash    = require('connect-flash');
+let flash    = require('connect-flash');
+let credentials = require('./config/credentials');
+let mailService = require('./lib/email')(credentials);
+var bodyParser = require('body-parser');
+
 module.exports = function(app, passport,User) {
 
 		// app.get('/no-layout',function(req,res){
@@ -67,10 +71,26 @@ module.exports = function(app, passport,User) {
 
 
 	    app.post('/postSignup', passport.authenticate('local-signup', {
-	        successRedirect : '/profile', // redirect to the secure profile section
 	        failureRedirect : '/signup', // redirect back to the signup page if there is an error
 	        failureFlash : true // allow flash messages
-	    }));
+	    }), function(req, res) {
+
+           res.render('email/signupMessage',
+           	   {layout:null, user:req.user}, function(err,html){
+           	   	   if(err){console.log('err in email template', err);}
+           	   	   try{
+           	   	   	  mailService.send(req.user.local.email,'Thanks for your signup!',html);
+           	   	   }catch(ex){
+           	   	   	  mailService.mailError('the email widget broke down!', __filename,ex);
+           	   	   }
+                   
+           	   }
+
+           	);
+           res.render('response/success',{user: req.user});
+
+
+        });
 
 
 	    app.post('/postLogin', passport.authenticate('local-login', {
@@ -79,30 +99,6 @@ module.exports = function(app, passport,User) {
 	        failureFlash : true // allow flash messages
 	    }));
 
-
-
-// =====================================
-    // GOOGLE ROUTES =======================
-    // =====================================
-    // send to google to do the authentication
-    // profile gets us their basic information including their name
-    // email gets their emails
-    //../plus.login/ below is the recommended login scope providing access to social features. This scope implicitly includes the profile scope and also requests that your app be given access to:
-    // 1 the age range of the authenticated user
-	// 2 the list of circled people that the user has granted your app access to know
-	// 3 the methods for reading, writing and deleting app activities (moments) to Google on behalf of the user
-	// In addition, this scope enables cross-platform single sign-on.
-
-	    app.get('/auth/google', passport.authenticate('google', { scope : ['https://www.googleapis.com/auth/plus.login'] }));
-
-	    // the callback after google has authenticated the user
-	    app.get('/auth/google/callback',
-	            passport.authenticate('google', {
-	                    failureRedirect : '/login',
-	                    successRedirect : '/'
-	            })
-	            
-		);
 
 
 
@@ -178,14 +174,3 @@ function isLoggedIn(req, res, next) {
     // if they aren't redirect them to the home page
     res.redirect('/');
 }
-
-
-// app.get('/no-layout',function(req,res){
-//     res.render('no-layout',{layout:null});//or layout:false
-// });
-//if you do not want to use layout
-
-// app.get('/custom-layout',function(req,res){
-//     res.render('custom-layout',{layout: 'custom'});
-// });
-//if you want another layout
