@@ -33,7 +33,7 @@ Installation
 -------------
 
 1. git clone https://github.com/thenodejsboilerplate/nodejs-boilerplate.git
-2. mv config-default config && cd Nodejs-Boilerplate
+2. mv config-default config && cd nodejs-boilerplate
 3. npm install
 4. create or modify config.js file under config folder
 5. node app

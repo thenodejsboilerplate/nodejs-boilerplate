@@ -55,7 +55,7 @@ module.exports = function(app, passport,User) {
 
 	    // we will want this protected so you have to be logged in to visit
 	    // we will use route middleware to verify this (the isLoggedIn function)
-	    app.get('/profile', isLoggedIn, function(req, res) {
+	    app.get('/user/profile', isLoggedIn, function(req, res) {
 	        res.render('users/profile', {
 	            user : req.user // get the user out of session and pass to template
 	        });
@@ -69,35 +69,74 @@ module.exports = function(app, passport,User) {
 		});
 
 
+     /*******we can use one of the following for /postSignup:*******/
+     /*************/
+	    // app.post('/postSignup', passport.authenticate('local-signup', {
+	    //     failureRedirect : '/signup', // redirect back to the signup page if there is an error
+	    //     failureFlash : true // allow flash messages
+	    // }), function(req, res) {
 
-	    app.post('/postSignup', passport.authenticate('local-signup', {
-	        failureRedirect : '/signup', // redirect back to the signup page if there is an error
-	        failureFlash : true // allow flash messages
-	    }), function(req, res) {
-
-           res.render('email/signupMessage',
-           	   {layout:null, user:req.user}, function(err,html){
-           	   	   if(err){console.log('err in email template', err);}
-           	   	   try{
-           	   	   	  mailService.send(req.user.local.email,'Thanks for your signup!',html);
-           	   	   }catch(ex){
-           	   	   	  mailService.mailError('the email widget broke down!', __filename,ex);
-           	   	   }
+     //       res.render('email/signupMessage',
+     //       	   {layout:null, user:req.user}, function(err,html){
+     //       	   	   if(err){console.log('err in email template', err);}
+     //       	   	   try{
+     //       	   	   	  mailService.send(req.user.local.email,'Thanks for your signup!',html);
+     //       	   	   }catch(ex){
+     //       	   	   	  mailService.mailError('the email widget broke down!', __filename,ex);
+     //       	   	   }
                    
-           	   }
+     //       	   }
 
-           	);
-           res.render('response/success',{user: req.user});
+     //       	);
+     //       res.render('response/success',{user: req.user});
 
 
+     //    });
+
+		app.post('/postSignup', function(req, res, next) {
+		  passport.authenticate('local-signup', function(err, user, info) {
+		    if (err) { return next(err); }
+		    if (!user) { return res.redirect('/signup',{message:'Signup fails!'}); }
+
+		    req.logIn(user, function(err) {
+		      if (err) { return next(err); }
+		      res.render('email/signupMessage',
+		           	   {layout:null, user:user}, function(err,html){
+		           	   	   if(err){console.log('err in email template', err);}
+		           	   	   try{
+		           	   	   	  mailService.send(user.local.email,'Thanks for your signup!',html);
+		           	   	   }catch(ex){
+		           	   	   	  mailService.mailError('the email widget broke down!', __filename,ex);
+		           	   	   }
+		                   
+		           	   }
+
+		      );
+		      return res.redirect('/user/profile');
+
+		    });
+		  })(req, res, next);
+		});        
+
+
+
+        app.post('/postLogin', function(req,res,next){
+        	passport.authenticate('local-login', function(err, user, info){
+				    if (err) { return next(err); }
+				    if (!user) { return res.redirect('/login',{message:'Something wrong with the Password or email!'}); }
+				    req.logIn(user, function(err) {
+				    	if (err) { return next(err); }
+				    	return res.redirect('/user/profile');
+ 
+				    });        		
+		    })(req, res, next);
         });
-
-
-	    app.post('/postLogin', passport.authenticate('local-login', {
-	        successRedirect : '/profile', // redirect to the secure profile section
-	        failureRedirect : '/login', // redirect back to the signup page if there is an error
-	        failureFlash : true // allow flash messages
-	    }));
+        //getLogin also can use the following too but the above way is flexible
+	    // app.post('/getLogin', passport.authenticate('local-login', {
+	    //     successRedirect : '/user/profile', // redirect to the secure profile section
+	    //     failureRedirect : '/login', // redirect back to the signup page if there is an error
+	    //     failureFlash : true // allow flash messages
+	    // }));
 
 
 
