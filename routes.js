@@ -20,6 +20,7 @@ module.exports = function(app, passport,User) {
 
 
 		app.get('/', function(req,res){
+			//console.log(mailService.sendToGroup(['frank25184@icloud.com','ddd@dd.com','djfd@sdf.com'],'subject','this is body'));
 		    res.render('home/home', {fortune: fortuneLib.getFortune() || 'There exist errors'});
 		});
 
