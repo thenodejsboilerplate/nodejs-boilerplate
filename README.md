@@ -7,6 +7,7 @@ Boilerplate in nodejs illustrating the use of **NodeJs** using **passport**, **e
 together with front pages for login, signup and profile mock, which can be used as a boilerplate in your app development
 
 QATest with:
+------------
 1, PAGE TESTS
 2, CROSS PAGE TESTS
 3,LOGIC TESTS
@@ -23,7 +24,7 @@ Technology
 | Express       | html5          | Mocha    |
 | handlebars    | grunt          | Zombie   |
 | Passport      | sass           | Chai     |
-|               |                |          |
+| node-mailer   |                |          |
 |               |                |          |
 |               |                |          |
 
@@ -32,7 +33,7 @@ Installation
 -------------
 
 1. git clone https://github.com/thenodejsboilerplate/nodejs-boilerplate.git
-2. cd Nodejs-Boilerplate
+2. mv config-default config && cd Nodejs-Boilerplate
 3. npm install
 4. create or modify config.js file under config folder
 5. node app
