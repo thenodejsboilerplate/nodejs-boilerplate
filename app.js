@@ -59,8 +59,8 @@ function startServer(){
 		  app.use(function(req,res,next){
 		  	const cluster = require('cluster');
 		  	if(cluster.isWorker){
-		  		console.log(`Worker ${cluster.worker.id} received request`);
-		  		next();
+		  		console.log(`Worker ${cluster.worker.id} received request`);//process.pid is the same
+		  		next();//if forget this , the app will not work
 		  	}else{
 		  		console.log('no worker');
 		  		next();

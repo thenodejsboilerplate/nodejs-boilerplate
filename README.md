@@ -16,6 +16,10 @@ QATest with:
 
 Includes login with Google together with Passport LocalStrategy
 
+Full use of muti-core processor and speeding up your app
+------------
+We use cluster module to make full use of muti-core processor and speed up your app
+
 Technology
 ------------
 
