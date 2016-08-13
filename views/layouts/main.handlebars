@@ -10,17 +10,32 @@
 </head>
 <body>
 <li>
+   {{#if user}}
     <a href="/about">about</a>
     <a href="/">home</a>
-    <a href="/submit-info">fileUpload</a>
-    <a href="/login">login</a>
+    <a href="/fileupload">fileUpload</a>
     <a href="/logout">Logout</a>
+    <a href="/user/updateUser">Update My Info</a>
+  {{else}}
+    <a href="/about">about</a>
+    <a href="/">home</a>
+    <a href="/fileupload">fileUpload</a>
+    <a href="/login">login</a>
     <a href="/signup">Signup</a>
+
+   {{/if}}
+
 </li>
 
-    {{#if message.length }}
-        <div class="alert alert-danger"> {{ message }} </div>
-    {{/if}}
+    {{#if messages }}
+        {{#if messages.error }}
+        <div class="alert alert-danger"> {{ messages.error }} </div>
+        {{else if messages.success}}
+        <div class="alert alert-success"> {{ messages.success }} </div>
+        {{else if messages.info}}
+        <div class="alert alert-info"> {{ messages.info }} </div>        
+        {{/if}}
+    {{/if}} 
 
 
  {{{body}}}

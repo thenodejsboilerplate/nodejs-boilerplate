@@ -21,12 +21,17 @@ var userSchema = new Schema({
           username: { type: String, required: true, unique: true },
           email: { type: String, required: true, unique: true },
           password: { type: String, required: true },
+
+          //Properties resetPasswordToken and resetPassword are not part of the above document, because they are set only after password reset is submitted. And since we haven’t specified default values, those properties will not be set when creating a new user.
+          resetPasswordToken: String,
+          resetPasswordExpires: Date,
           admin: Boolean,
           //location: String,
           meta: {
             age: Number
             //website: String
           },
+          //tags: [String],//[] means an array of string
           created_at: Date,
           updated_at: Date      
      },
@@ -58,11 +63,42 @@ userSchema.pre('save', function(next) {
   var currentDate = new Date();
   
   // change the updated_at field to current date
-  this.updated_at = currentDate;
+  this.local.updated_at = currentDate;
 
   // if created_at doesn't exist, add to that field
-  if (!this.created_at)
-    this.created_at = currentDate;
+  if (!this.created_at){
+    this.local.created_at = currentDate;
+  }
+
+
+
+
+  // //for pw,use this, we do not need generateHahs method below. But seems not woring???
+  // var user = this;
+  // var SALT_FACTOR = 5;
+
+  // if (!user.isModified('password')) {return next();}
+
+  // bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+  //   //genSalt(rounds, callback)
+  //       // rounds - [OPTIONAL] - the number of rounds to process the data for. (default - 10)
+  //       // callback - [REQUIRED] - a callback to be fired once the salt has been generated.
+  //       // error - First parameter to the callback detailing any errors.
+  //       // result - Second parameter to the callback providing the generated salt.
+  //   if (err) return next(err);
+
+  //   bcrypt.hash(user.password, salt, null, function(err, hash) {
+  //   // hash(data, salt, progress, cb)
+  //       // data - [REQUIRED] - the data to be encrypted.
+  //       // salt - [REQUIRED] - the salt to be used to hash the password.
+  //       // progress - a callback to be called during the hash calculation to signify progress
+  //       // callback - [REQUIRED] - a callback to be fired once the data has been encrypted.
+  //       // error - First parameter to the callback detailing any errors.
+  //       // result - Second parameter to the callback providing the encrypted form.      
+  //     if (err) return next(err);
+  //     user.password = hash;
+  //   });
+  // });
 
   next();
 });
@@ -79,6 +115,8 @@ userSchema.methods.generateHash = function(password) {
 userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.local.password);
 };
+
+
 
 
 // the schema is useless so far

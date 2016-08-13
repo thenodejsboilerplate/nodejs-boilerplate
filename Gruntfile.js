@@ -19,12 +19,12 @@ module.exports = function(grunt){
         },
 
         cafemocha:{
-            all:{src: ['<%= paths.js %>/cross-test/tests-*.js','<%= paths.js %>/logic-test/tests-*.js'], options: {ui:'tdd'},}
+            all:{src: ['<%= paths.js %>/cross-test/tests-*.js','<%= paths.js %>/logic-test/tests-*.js','<%= paths.js %>/stress-test/tests-*.js'], options: {ui:'tdd'}}
         },
-        jshint:{
-            app: ['app.js','<%= paths.js %>/**/*.js','lib/**/*.js'],
-            qa: ['Gruntfile.js','<%= paths.js %>/*-test/**/*.js']
-        },
+        // jshint:{
+        //     //app: ['<%= paths.js %>/**/*.js'],
+        //     //qa: ['Gruntfile.js','<%= paths.js %>/*-test/**/*.js']
+        // },
         // exec:{
         // exec:{
         //     linkchecker:
@@ -33,5 +33,5 @@ module.exports = function(grunt){
     });
 
     //regiter task
-    grunt.registerTask('default', ['cafemocha', 'jshint'/*,'exec'*/]);
+    grunt.registerTask('default', ['cafemocha'/*, 'jshint'//*,'exec'*/]);
 };

@@ -33,6 +33,7 @@
     "express-session": "^1.14.0",
     "formidable": "^1.0.17",
     "method-override": "^2.3.6",
+    "moment": "^2.14.1",
     "mongoose": "^4.5.8",
     "morgan": "^1.7.0",
     "nodemailer": "^2.5.0",
@@ -46,6 +47,7 @@
     "grunt-cafe-mocha": "^0.1.13",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-exec": "^1.0.0",
+    "loadtest": "^1.4.4",
     "mocha": "^2.5.3",
     "zombie": "^4.2.1"
   }

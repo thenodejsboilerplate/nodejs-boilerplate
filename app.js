@@ -1,5 +1,6 @@
-"use strict";
+
 function startServer(){
+	"use strict";
 	const express = require('express');
 	const bodyParser = require('body-parser');
 	//to get the info of the form submit , you need to use req.body, which must require the body-parser middleware first
@@ -8,24 +9,22 @@ function startServer(){
 	const path = require('path');
 	const mongoose = require('mongoose');
 	const passport = require('passport');
+
+	//Flash messages are stored in the session. First, setup sessions as usual by enabling cookieParser and session middleware. Then, use flash middleware provided by connect-flash.With the flash middleware in place, all requests will have a req.flash() function that can be used for flash messages.
 	const flash    = require('connect-flash');
 
-	//var morgan       = require('morgan');
 	const cookieParser = require('cookie-parser');
 	const session      = require('express-session');
 
 	const exphbs  = require('express-handlebars');
 
-
-
-	const dbConfig = require('./config/database');
 	require('./config/passport')(passport); // pass passport for configuration
-	const User = require('./models/User');
-
-
-	mongoose.connect(dbConfig.url);
+	const User = require('./models/User');    
 
 	const app = express();
+
+	//for logs, db ... in the different context (development or production)
+	const context = require('./modules/context')(app,mongoose);
 	app.set('port',process.env.PORT || 8000);
 	//app.set('env','development');
 
@@ -37,46 +36,13 @@ function startServer(){
 
 	app.use(express.static(__dirname + '/public'));
 	//static中间件可以将一个或多个目录指派为包含静态资源的目录,其中资源不经过任何特殊处理直接发送到客户端,如可放img,css。 设置成功后可以直接指向、img/logo.png,static中间件会返回这个文件并正确设定内容类型
-
+    
 
 	app.use(function(req,res,next){
 	    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
 	    next();
 	});
 	//我们不希望测试一直进行，只在需要测试时显示，我们准备用用一些中间件在检测查询字符串中的test=1,它必须出现在我们所有路由前
-
-
-
-
-
-
-	// set up our express application
-	switch(app.get('env')){
-		//run command:" NODE_ENV=production node app.js " if you wanna test the logging in the production envionment
-		case 'development':
-		  //concrete and colorful logging , log every request to the console
-		  app.use(require('morgan')('dev'));
-		  app.use(function(req,res,next){
-		  	const cluster = require('cluster');
-		  	if(cluster.isWorker){
-		  		console.log(`Worker ${cluster.worker.id} received request`);//process.pid is the same
-		  		next();//if forget this , the app will not work
-		  	}else{
-		  		console.log('no worker');
-		  		next();
-		  	}
-		  });
-		  break;
-		case 'production':
-		   //express-logger support logging loop(duplicate every 24 hours and begin new logs to prevent log files to become big forever)
-		   app.use(require('express-logger')({
-		   	   path: __dirname + '/log/requests.log'
-		   }));
-		   break;
-	}
-
-
-
 
 	app.use(cookieParser()); // read cookies (needed for auth)
 	/******form part start：  get information from html forms*******/
@@ -90,8 +56,18 @@ function startServer(){
 	app.use(passport.initialize());
 	app.use(passport.session()); // persistent login sessions
 	app.use(flash()); // use connect-flash for flash messages stored in session
+ 
 
+    // app.use(function(req,res,next){
+    // 	//pass it to the context if there is flash message and then delete it
+    // 	res.locals.flash = req.session.flash;
+    // 	delete req.session.flash;
+    // 	next();
+    // }); 
 
+    //ensure you tell express that you've used a proxy and it should be trusted if yuo set a proxy server like ngnix so req.ip, req.protocol,req.secure can reflect the connectiong details of the client and the proxy server rather than between your client and your app. Besides, req.ips will be an array, wihch is composed of IP of original client and IP or names of all the middle proxy
+    app.enable('trust proxy');
+ 
 
 	var routes = require('./routes')(app,passport,User);
 
