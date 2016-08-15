@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
+    <style>
+
+      a.personLogo{
+           display:inline-block;
+           width:30px;
+           height:30px;
+           overflow: hidden;
+      }
+      a.personLogo img{
+        display: inline-block;
+        width:100%;
+        height:100%;
+        border-radius: 100%;
+
+      }
+    </style>
+
     {{#if showTests}}
         <link rel="stylesheet" href="/vendor/mocha.css">
     {{/if}}
@@ -11,11 +28,20 @@
 <body>
 <li>
    {{#if user}}
+
     <a href="/about">about</a>
     <a href="/">home</a>
     <a href="/fileupload">fileUpload</a>
+
     <a href="/logout">Logout</a>
-    <a href="/user/updateUser">Update My Info</a>
+    <a href="/user/updateUser">{{ user.local.username }}</a>
+
+        {{#if user.local.logo}}
+            <a href="/user/profile" class="personLogo"><img src="/public/data/upload-logo/{{user.logo}}" ></a>
+        {{else}}
+            <a href="/user/profile" class="personLogo"><img src="/img/logo.jpg"></a>
+        {{/if}}
+
   {{else}}
     <a href="/about">about</a>
     <a href="/">home</a>

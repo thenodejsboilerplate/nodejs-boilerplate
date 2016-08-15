@@ -1,6 +1,9 @@
 
 function startServer(){
 	"use strict";
+
+    const config = require('./config/config');
+
 	const express = require('express');
 	const bodyParser = require('body-parser');
 	//to get the info of the form submit , you need to use req.body, which must require the body-parser middleware first
@@ -18,14 +21,14 @@ function startServer(){
 
 	const exphbs  = require('express-handlebars');
 
-	require('./config/passport')(passport); // pass passport for configuration
+	require('./lib/passport')(passport); // pass passport for configuration
 	const User = require('./models/User');    
 
 	const app = express();
 
 	//for logs, db ... in the different context (development or production)
-	const context = require('./modules/context')(app,mongoose);
-	app.set('port',process.env.PORT || 8000);
+	const context = require('./common/context').env1(app,mongoose);
+	app.set('port',process.env.PORT || config.port);
 	//app.set('env','development');
 
 	//express-handlebar

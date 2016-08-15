@@ -32,6 +32,7 @@
     "express-logger": "0.0.3",
     "express-session": "^1.14.0",
     "formidable": "^1.0.17",
+    "log4js": "^0.6.38",
     "method-override": "^2.3.6",
     "moment": "^2.14.1",
     "mongoose": "^4.5.8",
@@ -39,7 +40,8 @@
     "nodemailer": "^2.5.0",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "redis": "^2.6.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",

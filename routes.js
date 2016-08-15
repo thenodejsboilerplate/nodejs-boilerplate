@@ -1,9 +1,10 @@
 // app/routes.js
 "use strict";
 const flash        = require('connect-flash'),
-    credentials  = require('./config/credentials'),
-    mailService  = require('./lib/email')(credentials),
+    config  = require('./config/config'),
+    mailService  = require('./lib/email')(config),
     bodyParser   = require('body-parser'),
+    formidable = require('formidable'),
     fs           = require('fs'),
     crypto = require('crypto'),
     moment = require('moment');
@@ -54,7 +55,7 @@ module.exports   = function(app, passport,User) {
 
 
         
-		app.get('/signup',function(req,res){
+		app.get('/signup',notLoggedIn,function(req,res){
 
 			//render the page and pass in any flash data if it exists, req.flash is provided by connect-flash
 		    res.render('form/signup', { 
@@ -68,7 +69,7 @@ module.exports   = function(app, passport,User) {
 		});
 
 
-		app.get('/login',function(req,res){
+		app.get('/login',notLoggedIn,function(req,res){
 			//render the page and pass in any flash data if it exists
 		    res.render('form/login', { 
 	            messages: {
@@ -82,11 +83,13 @@ module.exports   = function(app, passport,User) {
 
 
 
-		app.get('/fileupload', function(req,res){
+		app.get('/fileupload',isLoggedIn, function(req,res){
 		    var now = new Date();
 		    res.render('form/fileupload', {
 		        year: now.getFullYear(),
-		        month: now.getMonth()//0-11
+		        month: now.getMonth(),//0-11
+		        user: req.user,
+	            
 		    });
 		});
 
@@ -101,7 +104,9 @@ module.exports   = function(app, passport,User) {
 	            	id: req.user._id,
 	            	username: req.user.local.username,
 	            	email: req.user.local.email,
+	            	logo: req.user.local.logo,
 	            	created_at: created_at,
+
 	            	//password: req.user.local.password,
 
 
@@ -117,13 +122,7 @@ module.exports   = function(app, passport,User) {
 
         app.get('/user/updateUser', isLoggedIn, function(req,res){
         	res.render('form/userUpdate', {
- 	            user : {
-	            	id: req.user._id,
-	            	username: req.user.local.username,
-	            	email: req.user.local.email,
-	            	password: req.user.local.password
-
-	            },
+ 	            user : req.user,
 	            messages: {
 	            	error: req.flash('error'),
 	            	success: req.flash('success'),
@@ -134,7 +133,7 @@ module.exports   = function(app, passport,User) {
         	});
         });
 
-		app.get('/forgotPassword', function(req, res) {
+		app.get('/forgotPassword', notLoggedIn, function(req, res) {
 		  res.render('form/resetPw', {
 		    user: req.user,
             messages: {
@@ -165,31 +164,71 @@ module.exports   = function(app, passport,User) {
 		});		
 
        app.post('/reset/:token', function(req,res){//we do not specify specific action route for the /reset/:token page, so it will use the /reset/:token as its action route
+
+       	  
        	  User.findOne({'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() }}, function(err,user){
 
        	  	   if(!user){
 		          req.flash('error', 'Password reset token is invalid or has expired.');
-		          return res.redirect('back');
+		          res.redirect('back');
        	  	   }
+       	  	   const password = req.body.password;
+               if(password.length < 5){
+               	       req.flash('error', 'Password field must be more than 5 characters!');
 
-               user.local.password = user.generateHash(req.body.password);
-               user.local.resetPasswordToken = undefined;
-               user.local.resetPasswordExpires = undefined;
+                       res.redirect('err/404');
+               }
+               const newPassword = user.generateHash(password);
+               // user.local.resetPasswordToken = undefined;
+               // user.local.resetPasswordExpires = undefined;
+               //user.local.password = newPassword;
+			  const conditions = { 'local.active': true, 'local.email':req.body.email },
+			  
+			      update = {'local.password':  newPassword,
+			             'local.resetPasswordToken': undefined,
+			             'local.resetPasswordExpires': undefined},
+			      ////$push: {sku: req.body.sku},
+			      options = {upsert: true};
+			     // console.log('working fine up the update function');
+             
+               ////use user will not work
+               User.update(
 
-               user.save(function(err){
-               	  if(err){console.log(err);}
-               	  req.logIn(user,function(err){
-               	  	  mailService.send(user.local.email,'Your password has been changed!', 
-                          'Hello,\n\n' + 'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
-               	  	  	);
-               	  });
+               	  conditions,update,options,
+               	  function(err,raw){
+               	  	console.log('no error in the above of if err');
+               	  	if(err){
+               	  		console.log(err.stack,raw);
 
-               });
-               req.flash('success', 'Success! Your password has been changed.');
-               res.redirect('/user/profile');
+               	  		req.flash('error', 'There was a error processing your request!');
+               	  		res.redirect(303,'/reset/'+ req.params.token);
+               	  	}
+ 
 
+	               	  req.logIn(user,function(err){
 
+	               	  	  mailService.send(user.local.email,'Your password has been changed!', 
+	                          'Hello,\n\n' + 'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
+	               	  	  	);
+	               	  });
 
+                    req.flash('success', 'successfully Updated your password!');
+                    res.redirect(303, '/user/profile');
+               	  }
+               	 );
+
+               // or we can use the following is ok too 
+               //user.save(function(err){
+               // 	  if(err){console.log(err);}
+               // 	  req.logIn(user,function(err){
+               // 	  	  mailService.send(user.local.email,'Your password has been changed!', 
+               //            'Hello,\n\n' + 'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
+               // 	  	  	);
+               // 	  });
+
+               // });
+               // req.flash('success', 'Success! Your password has been changed.');
+               // res.redirect('/user/profile');
        	  });
        });
 
@@ -336,47 +375,146 @@ module.exports   = function(app, passport,User) {
 
 		app.post("/process/:year/:month", function(req,res){
 
-			let dataDir = __dirname + '/public/data';
-			let photoDir = dataDir + '/upload-photo';
-			fs.existsSync(dataDir)  || fs.mkdirSync(dataDir);
-			fs.existsSync(photoDir) || fs.mkdirSync(photoDir);
+			const dataDir = __dirname + '/public/data';
+			const photoDir = dataDir + '/upload-logo';
+			//existsSync depreciated!! do not use it any more
+			// fs.existsSync(dataDir)  || fs.mkdirSync(dataDir);
+			// fs.existsSync(photoDir) || fs.mkdirSync(photoDir);
+
+			//alos can use:
+			fs.stat(dataDir, function(err, stat) {
+			    if(err == null) {
+			        console.log('File exists');
+			        return;
+			    } else if(err.code == 'ENOENT') {
+			        // file does not exist
+			        fs.mkdirSync(dataDir);
+			        return;
+			    } else {
+			        console.log('Some other error: ', err.code);
+			        return;
+			    }
+			});
+
+			fs.stat(photoDir, function(err, stat) {
+			    if(err == null) {
+			        console.log('File exists');
+			        return;
+			    } else if(err.code == 'ENOENT') {
+			        // file does not exist
+			        fs.mkdirSync(photoDir);
+			        return;
+			    } else {
+			        console.log('Some other error: ', err.code);
+			        return;
+			    }
+			});			
+			// fs.access(dataDir, fs.constants.F_OK, function(err) {
+			//     if (!err) {
+			//         // Do something
+			//         console.log(dataDir + 'the folder exits!')
+
+			//     } else {
+			//         // It isn't accessible
+			//         fs.mkdirSync(dataDir);
+			//     }
+			// });
+			// fs.access(photoDir, fs.constants.F_OK, function(err) {
+			//     if (!err) {
+			//         // Do something
+			//         console.log(photoDir + 'the folder exits!')
+
+			//     } else {
+			//         // It isn't accessible
+			//         fs.mkdirSync(photoDir);
+			//     }
+			// });			
+			//fs.constants.F_OK - path is visible to the calling process. This is useful for determining if a file exists, but says nothing about rwx permissions. Default if no mode is specified.
+			// fs.constants.R_OK - path can be read by the calling process.
+			// fs.constants.W_OK - path can be written by the calling process.
+			// fs.constants.X_OK - path can be executed by the calling process. This has no effect on Windows (will behave like fs.constants.F_OK).
 
             
 
 		    try{
 		        //store the data to the database
 		        //...
-		        console.log('Received contact from ' + req.body.name + " <" + req.body.email + '>' );
+		        console.info('Received contact from ' + req.user.local.username + " <" + req.user.local.email + '>' );
 		        
 		            
-		        console.log('the file uploaded: ' , JSON.stringify(req.body));
+		        
 
-		        let form = new formidable.IncomingForm();
+		        const form = new formidable.IncomingForm();
 		        //form.uploadDir = "/public/img";
 
 
-		        form.parse(req,function(err,fields,files){
+		        form.parse(req,function(err,fields,file){
 
 		            if(err){return res.redirect(303, '/404');}
-		            let photo = files.photo;
-		            let dir = photoDir + '/' + Date.now;//prevent uploading file with the same name
-                    let path = dir + '/' + photo.name;
-                    fs.mkdirSync(dir);
-                    fs.renameSync(photo.path, dir + '/' + photo.name);//rename or move the file uploaded;and photo.path is the temp file Formidable give
-                    saveFileInfo('upload-photo', fields.email,req.params.year,fields.params.year,fields.params.month,path);
+		            const photo = file.photo;
+		            
+		            const timeDir = `${req.params.year}${req.params.month}`;
+		            const thedir = photoDir + '/' + timeDir;//prevent uploading file with the same name
 
-		            console.log('received fields:', fields);
-		            console.log('received files:', files.photos.name);
-		            //var fileName = (new Date).getTime() + files.photos.name;
-		            // fs.rename(files.photos.path+'/',  path.join(__dirname + "/public/img/"), function(err){
-		            //     console.log(err);
-		            // });
+					fs.stat(thedir, function(err, stat) {
+						console.log('stat parts begins...');
+					    if(err == null) {
+					        console.log('File exists');
+					        return;
+					    } else if(err.code == 'ENOENT') {
+					        // file does not exist
+					        console.log('the file does not exist.now creating...');
+					        fs.mkdirSync(thedir);
+					       
+					        return;
+                            
+					    } else {
+					        console.log('Some other error: ', err.code);
+					        return;
+					    }
+					});
 
+		            const photoName = Date.now() + photo.name; 
+                    const fullPath = thedir + '/' + photoName;
 
+                    // if(!dir){
+                    //     fs.mkdirSync(dir);
+                    // }
+                    console.log('the dir is :' + thedir);
+
+                    
+                    
+                    console.log(photo.name,photo.path,fullPath);
+
+                     
+                    fs.renameSync(photo.path, fullPath);//rename or move the file uploaded;and photo.path is the temp file Formidable give
+                                     
+
+                    if(req.user){
+	                    function saveFileInfo(){
+	                    	
+	                    	const user = req.user;
+	                    	user.local.logo = timeDir + '/' + phontoName;
+	                    	user.save(function(err){
+	                    		if(err){throw err}
+	                    		req.flash('success','Upload your logo successfully');
+	                    	    res.redirect('/user/profile');
+	                    	});
+
+	                    }
+	                  //  saveFileInfo('upload-photo', fields.email,req.params.year,fields.params.year,fields.params.month,path);
+                    }else{
+                    	console.log('user not login');
+                    	req.flash('eror','You need to login first to upload your logo');
+                    	res.redirect(303, '/login');
+                    }
+
+		            //console.log('received fields:', fields);
+		            //console.log('received files:', photo.name);
 
 		        });
 
-                req.flash('uploadDone', 'Uploading successfully!')
+                req.flash('success', 'Uploading successfully!')
 
 		        return res.xhr ? res.render({success: true}) :
 		            res.redirect(303, '/success');
@@ -389,11 +527,28 @@ module.exports   = function(app, passport,User) {
 		//to get form data using req.body
 
 
+
+
+
+
+
+
 		app.get('/success', function(req,res){
 		    res.render('response/success',{message: req.flash('uploadDone')});
 		});
 		app.get('/de-error', function(req,res){
 		    res.render('errors/db-error');
+		});
+
+		app.get('/err/404', function(req,res){
+			res.render('errors/404',{
+	            messages: {
+	            	error: req.flash('error'),
+	            	success: req.flash('success'),
+	            	info: req.flash('info'),
+	            }, 
+		    	user: req.user,				
+			});
 		});
 		/*****form part end********/
 };
@@ -414,4 +569,16 @@ function isLoggedIn(req, res, next) {
 
     // if they aren't redirect them to the home page
     res.redirect('/');
+}
+
+function notLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.user){
+	    req.flash('error','You have already logined!');
+	    // if they aren't redirect them to the home page
+	    res.redirect('/');
+    }
+    return next();
+
 }

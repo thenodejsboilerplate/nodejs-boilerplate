@@ -19,9 +19,11 @@ var userSchema = new Schema({
      local: {
           //name: String,
           username: { type: String, required: true, unique: true },
-          email: { type: String, required: true, unique: true },
-          password: { type: String, required: true },
+          email: { type: String, required: true, unique: true,min: 4 },
+          password: { type: String, required: true },//,match: /[0-9a-zA-Z_-]/
 
+          active: {type:Boolean, required: true, default: true },
+          logo: {type: String},
           //Properties resetPasswordToken and resetPassword are not part of the above document, because they are set only after password reset is submitted. And since we haven’t specified default values, those properties will not be set when creating a new user.
           resetPasswordToken: String,
           resetPasswordExpires: Date,
@@ -62,7 +64,7 @@ userSchema.pre('save', function(next) {
   // get the current date
   var currentDate = new Date();
   
-  // change the updated_at field to current date
+  // change the updated_at field to current date: do not leave .local
   this.local.updated_at = currentDate;
 
   // if created_at doesn't exist, add to that field
