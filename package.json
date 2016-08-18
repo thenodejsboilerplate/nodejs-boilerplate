@@ -53,6 +53,7 @@
     "grunt-exec": "^1.0.0",
     "loadtest": "^1.4.4",
     "mocha": "^2.5.3",
+    "restler": "^3.4.0",
     "zombie": "^4.2.1"
   }
 }

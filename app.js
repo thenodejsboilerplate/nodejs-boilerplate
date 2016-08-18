@@ -42,14 +42,8 @@ function startServer(){
 	//static中间件可以将一个或多个目录指派为包含静态资源的目录,其中资源不经过任何特殊处理直接发送到客户端,如可放img,css。 设置成功后可以直接指向、img/logo.png,static中间件会返回这个文件并正确设定内容类型
     
 
-
-    // var admin = express.Router();
-    // var vhost = require('vhost');
-    // app.use(vhost('test.trver.com', admin));
-
-    // admin.get('/', function(){
-    // 	res.render('cross-browser-test/hood-river');
-    // });
+   //for setting second domain using vhost
+   require('./secondDomain/api')(app,express);
 
 
 	app.use(function(req,res,next){
@@ -106,6 +100,7 @@ function startServer(){
 
 
     var autoView = require('./common/autoView')(app);
+
 	//customize 404 page using middleware
 	app.use(function(req,res,next){
 	    res.status(404);

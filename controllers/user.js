@@ -341,7 +341,7 @@ const flash        = require('connect-flash'),
 					// fs.existsSync(dataDir)  || fs.mkdirSync(dataDir);
 					// fs.existsSync(photoDir) || fs.mkdirSync(photoDir);
 
-					//alos can use:
+					//also can use:
 					fs.stat(dataDir, function(err, stat) {
 					    if(err == null) {
 					        console.log('File exists');

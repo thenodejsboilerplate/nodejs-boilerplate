@@ -27,7 +27,8 @@ module.exports   = function(app, passport,User) {
 		app.get('/forgotPassword', notLoggedIn, user.forgotPassword);
 		app.get('/reset/:token', user.getResetToken);
 		app.get('/logout', isLoggedIn,user.logout);	
-
+         
+        //404:not found; 400 wrong request;401 not authorized
 	    app.get('/success', respond.success);
 		app.get('/err/500', respond.Error500);//server error
 		app.get('/err/404', respond.Error404);//page not found	
