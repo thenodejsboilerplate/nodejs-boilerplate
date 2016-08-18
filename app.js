@@ -19,6 +19,7 @@ function startServer(){
 	const cookieParser = require('cookie-parser');
 	const session      = require('express-session');
 
+
 	const exphbs  = require('express-handlebars');
 
 	require('./lib/passport')(passport); // pass passport for configuration
@@ -41,6 +42,16 @@ function startServer(){
 	//static中间件可以将一个或多个目录指派为包含静态资源的目录,其中资源不经过任何特殊处理直接发送到客户端,如可放img,css。 设置成功后可以直接指向、img/logo.png,static中间件会返回这个文件并正确设定内容类型
     
 
+
+    // var admin = express.Router();
+    // var vhost = require('vhost');
+    // app.use(vhost('test.trver.com', admin));
+
+    // admin.get('/', function(){
+    // 	res.render('cross-browser-test/hood-river');
+    // });
+
+
 	app.use(function(req,res,next){
 	    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
 	    next();
@@ -53,9 +64,29 @@ function startServer(){
 	app.use(bodyParser.urlencoded({ extended: false }));
 	//or app.use(require('body-parser')());
 
+	//redis session starts:
+	// Create express-session and pass it to connect-redis object as parameter. This will initialize it.
+	const redisStore = require('connect-redis')(session);
+	//Then in session middle ware, pass the Redis store information such as host, port and other required parameters.
+	const client = require('./lib/redis');
+	app.use(session({
+	    secret: config.session_secret,
+	    // create new redis store.
+	    store: new redisStore({port:config.db.redis.development.port, host:config.db.redis.development.host,ps:config.db.redis.development.pw, ttl :  config.db.redis.development.ttl}),//Redis session TTL (expiration) in seconds
+	    //saveUninitialized: false,
+	    //resave: false
+    }));
+
+    //If Redis server running, then this is default configuration. Once you have configured it. you can use like:
+        //    req.session.key_name = value to set 
+        // this will be set to redis, value may contain User ID, email or any information which you need across your application.
+        //Fetch the information from redis session key.
+        //     req.session.key["keyname"]
+
 
 	// required for passport
-	app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+	//app.use(session({ secret: 'ssshhhhh' })); // session secret
+
 	app.use(passport.initialize());
 	app.use(passport.session()); // persistent login sessions
 	app.use(flash()); // use connect-flash for flash messages stored in session
@@ -71,15 +102,14 @@ function startServer(){
     //ensure you tell express that you've used a proxy and it should be trusted if yuo set a proxy server like ngnix so req.ip, req.protocol,req.secure can reflect the connectiong details of the client and the proxy server rather than between your client and your app. Besides, req.ips will be an array, wihch is composed of IP of original client and IP or names of all the middle proxy
     app.enable('trust proxy');
  
-
 	var routes = require('./routes')(app,passport,User);
 
 
-
+    var autoView = require('./common/autoView')(app);
 	//customize 404 page using middleware
 	app.use(function(req,res,next){
 	    res.status(404);
-	    res.render('errors/404');
+	    res.render('response/404');
 	});
 
 	//customize 505 page using middleware
@@ -87,7 +117,7 @@ function startServer(){
 	    console.error(err.stack);
 	    // res.status(500);
 	    // res.render('errors/500');
-	    res.status(500).render('errors/500');
+	    res.status(500).render('response/500');
 	});
 
 	app.listen(app.get('port'), function(){
