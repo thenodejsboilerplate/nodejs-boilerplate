@@ -38,12 +38,6 @@ module.exports   = function(app, passport,User) {
         app.put('/update/updateUser',isLoggedIn, user.putUpdateUser);        
 		app.post('/postSignup', user.postSignup);        
         app.post('/postLogin', user.postLogin(passport));
-        //getLogin also can use the following too but the above way is flexible
-	    // app.post('/getLogin', passport.authenticate('local-login', {
-	    //     successRedirect : '/user/profile', // redirect to the secure profile section
-	    //     failureRedirect : '/login', // redirect back to the signup page if there is an error
-	    //     failureFlash : true // allow flash messages
-	    // }));
 
 		app.post("/process/:year/:month", user.postFileUpload(app));
 		//to get form data using req.body

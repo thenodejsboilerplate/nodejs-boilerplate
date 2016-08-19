@@ -20,7 +20,7 @@ function startServer(){
 	const session      = require('express-session');
 
 
-	const exphbs  = require('express-handlebars');
+
 
 	require('./lib/passport')(passport); // pass passport for configuration
 	const User = require('./models/User');    
@@ -29,22 +29,16 @@ function startServer(){
 
 	//for logs, db ... in the different context (development or production)
 	const context = require('./common/context').env1(app,mongoose);
+
 	app.set('port',process.env.PORT || config.port);
 	//app.set('env','development');
-
-	//express-handlebar
-
-	app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-	//This view engine adds back the concept of "layout", which was removed in Express 3.x. It can be configured with a path to the layouts directory, by default it's set to "views/layouts/".
-	app.set('view engine', 'handlebars');
-
 	app.use(express.static(__dirname + '/public'));
 	//static中间件可以将一个或多个目录指派为包含静态资源的目录,其中资源不经过任何特殊处理直接发送到客户端,如可放img,css。 设置成功后可以直接指向、img/logo.png,static中间件会返回这个文件并正确设定内容类型
     
 
    //for setting second domain using vhost
    require('./secondDomain/api')(app,express);
-
+   require('./lib/hbs')(app);
 
 	app.use(function(req,res,next){
 	    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';

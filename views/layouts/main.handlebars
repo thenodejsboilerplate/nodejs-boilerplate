@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
+    <!-- All css Files Here -->
+      {{{block "css"}}} <!--for express-handlebar custom style-->
     <style>
-
       a.personLogo{
            display:inline-block;
            width:30px;
@@ -27,6 +27,7 @@
 </head>
 <body>
 <li>
+
    {{#if user}}
 
     <a href="/about">about</a>
@@ -82,5 +83,32 @@
 
     <script>mocha.run();</script>
 {{/if}}
+
+    <!-- All css Files Here -->
+      {{{block "js"}}} <!--for hbs custom style-->
+
+
+
+    {{!--HOW TO USE STATIC RESOURCES IN CLIENT， TO USE static FUNCTION FROM THE SERVER--}}
+    <script type="text/javascript">
+        var static = {
+            IMG_CART_EMPTY: "{{static '/img/logo.jpg'}}",
+            IMG_CART_FULL: "{{static '/img/full.jpg'}}"
+        };
+
+        $(document).on('cart_changed', function(){
+            $('header img.ccartIcon').atttr('src', cart.isEmpty()?static.IMG_CART_EMPTY:static.IMG_CART_FULL );
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
