@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <!-- All css Files Here -->
+    <link rel="stylesheet" type="text/css" href="{{static '/css/app.min1096a740.css'}}">
       {{{block "css"}}} <!--for express-handlebar custom style-->
     <style>
       a.personLogo{
@@ -67,6 +68,9 @@
 
  {{{body}}}
 
+
+
+<script src="{{static 'js/app.min08c5359b.js'}}"></script>
 {{#if showTests}}
     <div id="mocha"></div>
     <script src="/vendor/mocha.js"></script>
@@ -83,6 +87,9 @@
 
     <script>mocha.run();</script>
 {{/if}}
+
+
+
 
     <!-- All css Files Here -->
       {{{block "js"}}} <!--for hbs custom style-->
