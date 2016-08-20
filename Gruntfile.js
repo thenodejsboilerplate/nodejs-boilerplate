@@ -11,7 +11,8 @@ module.exports = function(grunt){
         'grunt-contrib-uglify',
         'grunt-contrib-cssmin',
         'grunt-hashres',
-        'grunt-contrib-watch'
+        'grunt-contrib-watch',
+        'grunt-lint-pattern'
     ].forEach(function(task){
         grunt.loadNpmTasks(task);
     });
@@ -96,7 +97,7 @@ module.exports = function(grunt){
 
         hashres: {
             options:{
-                fileNameFormat: '${name}${hash}.${ext}'
+                fileNameFormat: '${name}.${hash}.${ext}'
             },
             all: {
                 src: [
@@ -126,7 +127,7 @@ module.exports = function(grunt){
             //css
             sass: {
                 files: '<%= paths.scss %>/**/*.scss',
-                tasks: ['compass']
+                tasks: ['sass']
             },
             css: {
                 files: '<%= paths.css %>/**/*.css',
@@ -168,14 +169,16 @@ module.exports = function(grunt){
                        },
 
 
-                    ]
+                    ],
                 },//end of options
 
                 files: {
                     src: [
-                        'views/**/*.handlebars'
-                    ]
-                }
+                   
+                        'views/**/*.handlebars',
+                    ],
+                    
+                },
 
 
             },//end of view_statics
@@ -188,21 +191,18 @@ module.exports = function(grunt){
                             message: 'Un-mapped static resource found in sass property.'
                          },
 
-                    ]
+                    ],
                 },
                 files: {
                     src: [
-                      'sass/**/*.scss'
-                    ]
-                }
-            }
+                       'public/sass/**/*.scss',
+                       '!public/sass/modules/_function.scss'
+                    ],
+                },
+            },
 
 
-
-
-
-
-         }
+         },
 
 
          });//end of grunt.initConfig
@@ -210,6 +210,6 @@ module.exports = function(grunt){
 
     //regiter task
     grunt.registerTask('watch',['watch']);
-    grunt.registerTask('default', ['cafemocha','lint_pattern']/*, 'jshint'//*,'exec'*/);
+    grunt.registerTask('default', [/**'cafemocha',**/'lint_pattern']/*, 'jshint'//*,'exec'*/);
     grunt.registerTask('statics', ['sass','cssmin','uglify:dist','hashres']);
 };
