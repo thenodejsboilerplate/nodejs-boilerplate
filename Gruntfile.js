@@ -210,6 +210,7 @@ module.exports = function(grunt){
 
     //regiter task
     grunt.registerTask('watch',['watch']);
-    grunt.registerTask('default', [/**'cafemocha',**/'lint_pattern']/*, 'jshint'//*,'exec'*/);
-    grunt.registerTask('statics', ['sass','cssmin','uglify:dist','hashres']);
+    grunt.registerTask('default', ['lint_pattern','sass','cssmin','uglify:dist','hashres']/*, 'jshint'//*,'exec'*/);
+    grunt.registerTask('test', [/**'cafemocha',**/'lint_pattern']/*, 'jshint'//*,'exec'*/);
+    grunt.registerTask('static', ['sass','cssmin','uglify:dist','hashres']);
 };

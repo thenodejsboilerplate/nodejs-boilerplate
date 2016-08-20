@@ -82,7 +82,7 @@
     <script src="{{static '/js/page-test/tests-global.js'}}"></script>
 
     {{#if pageTestScript}}
-        <script src="{{pageTestScript}}"></script>
+        <script src="{{static '/'}}{{pageTestScript}}"></script>
     {{/if}}
 
     <script>mocha.run();</script>

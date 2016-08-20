@@ -9,7 +9,9 @@ const flash        = require('connect-flash'),
     moment = require('moment'),
     path = require('path');
 
-		exports.signup = function(req,res){
+module.exports = {
+	
+		signup: function(req,res){
 
 					//render the page and pass in any flash data if it exists, req.flash is provided by connect-flash
 				    res.render('form/signup', { 
@@ -20,9 +22,9 @@ const flash        = require('connect-flash'),
 			            }, 
 				    	user: req.user,
 				    });
-		};
+		},
 
-		exports.login = function(req,res){
+		login: function(req,res){
 					//render the page and pass in any flash data if it exists
 				    res.render('form/login', { 
 			            messages: {
@@ -32,9 +34,9 @@ const flash        = require('connect-flash'),
 			            }, 
 				    	user: req.user,
 				    });
-		};
+		},
 
-		exports.fileupload = function(req,res){
+		fileupload: function(req,res){
 				    var now = new Date();
 				    res.render('form/fileupload', {
 			            messages: {
@@ -47,10 +49,10 @@ const flash        = require('connect-flash'),
 				        user: req.user,
 			            
 				    });
-		};
+		},
 
 
-		exports.profile = function(req, res) {
+		profile: function(req, res) {
 			    	const created_at = moment(req.user.local.created_at).format('MMMM Do YYYY, h:mm:ss a');
 			        res.render('users/profile', {
 
@@ -71,9 +73,9 @@ const flash        = require('connect-flash'),
 			            	info: req.flash('info'),
 			            }, // get the user out of session and pass to template
 			        });
-		};
+		},
 
-		exports.updateUser = function(req,res){
+		updateUser: function(req,res){
 		        	res.render('form/userUpdate', {
 		 	            user : req.user,
 			            messages: {
@@ -84,9 +86,9 @@ const flash        = require('connect-flash'),
 
 
 		        	});
-		};
+		},
 
-		exports.forgotPassword = function(req, res) {
+		forgotPassword: function(req, res) {
 				  res.render('form/resetPw', {
 				    user: req.user,
 		            messages: {
@@ -95,9 +97,9 @@ const flash        = require('connect-flash'),
 		            	info: req.flash('info'),
 		            }, 	    
 				  });
-		};
+		},
 
-		exports.getResetToken = function(req, res) {
+		getResetToken: function(req, res) {
 						User.findOne({ 'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() } }, function(err, user) {
 								    if (!user) {
 								      req.flash('error', 'Password reset token is invalid or has expired.');
@@ -112,9 +114,9 @@ const flash        = require('connect-flash'),
 								            },	    
 								    });
 				        });
-		};
+		},
 
-		exports.postResetToken = function(req,res){//we do not specify specific action route for the /reset/:token page, so it will use the /reset/:token as its action route
+		postResetToken: function(req,res){//we do not specify specific action route for the /reset/:token page, so it will use the /reset/:token as its action route
 			  
 		       	  User.findOne({'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() }}, function(err,user){
 
@@ -180,9 +182,9 @@ const flash        = require('connect-flash'),
 		               // req.flash('success', 'Success! Your password has been changed.');
 		               // res.redirect('/user/profile');
 		       	  });
-		};
+		},
 
-		exports.postForgotPassword = function(User){
+		postForgotPassword: function(User){
 		       return function(req,res){
 					//var token;
 					//console.log();
@@ -233,13 +235,13 @@ const flash        = require('connect-flash'),
 
 
 		      };
-		  };
+		},
 
-		exports.putUpdateUser = function(req,res){
+		putUpdateUser: function(req,res){
 		              
-		};
+		},
 
-		exports.logout = function(req,res){
+		logout: function(req,res){
 					//req.logout();
 					req.session.destroy(function(err){
 						  if(err) {
@@ -250,7 +252,7 @@ const flash        = require('connect-flash'),
 					});
 					//Passport exposes a logout() function on req (also aliased as logOut()) that can be called from any route handler which needs to terminate a login session. Invoking logout() will remove the req.user property and clear the login session (if any).
 					// res.redirect('/');
-		};
+		},
 
 
 
@@ -277,7 +279,7 @@ const flash        = require('connect-flash'),
 
 
 		 //    });
-		exports.postSignup = function(req, res, next) {
+		postSignup: function(req, res, next) {
 				  passport.authenticate('local-signup', function(err, user, info) {
 				    if (err) { return next(err); }
 				    if (!user) {
@@ -304,9 +306,9 @@ const flash        = require('connect-flash'),
 
 				    });
 				  })(req, res, next);
-		};
+		},
 
-		exports.postLogin = function(passport){
+		postLogin: function(passport){
 		    return function(req,res,next){
 		        	passport.authenticate('local-login', function(err, user, info){
 						    if (err) { return next(err); }
@@ -323,10 +325,10 @@ const flash        = require('connect-flash'),
 						    });        		
 				    })(req, res, next);
 		    };
-		 };
+		 },
 
 
-		exports.postFileUpload = function(app){
+		postFileUpload: function(app){
 		       return function(req,res){
                     let dataDir;
 		            if(app.get('env')=== 'development'){
@@ -485,16 +487,9 @@ const flash        = require('connect-flash'),
 				    }
 		       };
 
-		};
+		},
 
 
 
 
-
-
-
-
-
-
-
-
+};//end of exports

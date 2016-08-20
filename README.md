@@ -42,6 +42,12 @@ Installation
 4. create or modify config.js file under config folder
 5. node app
 
+Test and auto-work
+-------------
+1. grunt test
+2: grunt
+
+
 License
 ------------
 
