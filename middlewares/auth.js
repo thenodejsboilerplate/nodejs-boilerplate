@@ -39,7 +39,7 @@ module.exports = {
 						req.flash('error','Sorry, you\'re not allowed to visit this page');
 						res.redirect(303,'response/error');//unauthorized
 					}				
-			}
+			};
 
 			
 		},
