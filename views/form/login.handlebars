@@ -1,8 +1,9 @@
 <h1>LOGIN</h1>
 <h3><a href="/auth/google">Sign In with Google</a></h3>
-
+<h3><a href="/auth/github">Sign In with Github</a></h3>
 
 <form method="POST" action="/postLogin">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <label>
     Email: <input type="email" name="email">
     </label>

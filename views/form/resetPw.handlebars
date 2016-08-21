@@ -1,6 +1,7 @@
 <h1>RESET PASSWORD</h1>
 
 <form method="POST" action="/postForgotPassword">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <label>
     Email: <input type="email" name="email">
     </label>

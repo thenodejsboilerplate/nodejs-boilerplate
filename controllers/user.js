@@ -10,7 +10,7 @@ const flash        = require('connect-flash'),
     path = require('path');
 
 module.exports = {
-	
+
 		signup: function(req,res){
 
 					//render the page and pass in any flash data if it exists, req.flash is provided by connect-flash
@@ -250,6 +250,7 @@ module.exports = {
 						    res.redirect('/');
 						  }				
 					});
+					//YOU CAN ALSO USE REQ.LOGOUT() IF YOU DO NOT USE REDIS
 					//Passport exposes a logout() function on req (also aliased as logOut()) that can be called from any route handler which needs to terminate a login session. Invoking logout() will remove the req.user property and clear the login session (if any).
 					// res.redirect('/');
 		},
@@ -279,7 +280,9 @@ module.exports = {
 
 
 		 //    });
-		postSignup: function(req, res, next) {
+		postSignup: function(passport){
+
+		     return function(req, res, next) {
 				  passport.authenticate('local-signup', function(err, user, info) {
 				    if (err) { return next(err); }
 				    if (!user) {
@@ -306,7 +309,9 @@ module.exports = {
 
 				    });
 				  })(req, res, next);
-		},
+		     };
+ 
+        },
 
 		postLogin: function(passport){
 		    return function(req,res,next){

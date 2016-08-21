@@ -6,13 +6,18 @@ NodeJS Boilerplate
 Boilerplate in nodejs illustrating the use of **NodeJs** using **passport**, **express**, **handlebars** and **mongoose** environment
 together with front pages for login, signup and profile mock, which can be used as a boilerplate in your app development! Some Inspired by WEB DEVELOPMENT WITH NODE AND EXPRESS By Ethan Brown
 
+Prerequisite:
+------------
+1. You need to install redis in your server or local computer
+
+
 QATest with:
 ------------
-1, PAGE TESTS
-2, CROSS PAGE TESTS
-3,LOGIC TESTS
-4,JSLINT TO PERFECT THE CODE
-5,GRUNT TO AUTOMATE YOUR PROCESS
+1. PAGE TESTS
+2. CROSS PAGE TESTS
+3. LOGIC TESTS
+4. JSLINT TO PERFECT THE CODE
+5. GRUNT TO AUTOMATE YOUR PROCESS
 
 Includes login with Google together with Passport LocalStrategy
 
@@ -45,7 +50,14 @@ Installation
 Test and auto-work
 -------------
 1. grunt test
-2: grunt
+2. grunt
+
+Debug
+-------
+npm install -g node-inspector
+node-debug app.js
+
+
 
 
 License

@@ -29,6 +29,7 @@
     "connect-redis": "^3.1.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.7.1",
+    "csurf": "^1.9.0",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-logger": "0.0.3",
@@ -42,6 +43,7 @@
     "morgan": "^1.7.0",
     "nodemailer": "^2.5.0",
     "passport": "^0.3.2",
+    "passport-github2": "^0.1.10",
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0",
     "vhost": "^3.0.2"

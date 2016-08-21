@@ -27,7 +27,8 @@ var userSchema = new Schema({
           //Properties resetPasswordToken and resetPassword are not part of the above document, because they are set only after password reset is submitted. And since we haven’t specified default values, those properties will not be set when creating a new user.
           resetPasswordToken: String,
           resetPasswordExpires: Date,
-          admin: Boolean,
+          roles:[String],
+          admin: {Boolean: Boolean, default: false},
           //location: String,
           meta: {
             age: Number
@@ -37,18 +38,18 @@ var userSchema = new Schema({
           created_at: Date,
           updated_at: Date      
      },
-    facebook         : {
+    github        : {
         id           : String,
         token        : String,
         email        : String,
         name         : String
     },
-    twitter          : {
-        id           : String,
-        token        : String,
-        displayName  : String,
-        username     : String
-    },
+    // twitter          : {
+    //     id           : String,
+    //     token        : String,
+    //     displayName  : String,
+    //     username     : String
+    // },
     google           : {
         id           : String,
         token        : String,
