@@ -26,8 +26,7 @@ module.exports = function(app){
 			        res.render('static/' + autoViews[path]);
 			    } else if(err.code == 'ENOENT') {
 			        // file does not exist
-			        //fs.mkdirSync(dataDir);
-			        next();
+			        next('route');
 			    } else {
 			        console.log('Some other error: ', err.code);
 			        return;

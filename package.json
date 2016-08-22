@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/thenodejsboilerplate/nodejs-boilerplate/issues"
   },
-  "homepage": "https://github.com/https://github.com/thenodejsboilerplate/nodejs-boilerplate#readme",
+  "homepage": "https://github.com/thenodejsboilerplate/nodejs-boilerplate#readme",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",

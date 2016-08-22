@@ -4,10 +4,11 @@ const flash        = require('connect-flash'),
     mailService  = require('../lib/email')(config),
     bodyParser   = require('body-parser'),
     formidable = require('formidable'),
-    fs           = require('fs'),
     crypto = require('crypto'),
     moment = require('moment'),
-    path = require('path');
+    path = require('path'),
+    fs = require('fs'),
+	utils = require('../lib/utility');
 
 module.exports = {
 
@@ -337,45 +338,20 @@ module.exports = {
 		       return function(req,res){
                     let dataDir;
 		            if(app.get('env')=== 'development'){
-		            	dataDir = '/Users/frank25184/desktop/nodejs/nodeForm-team/public/data';
+		            	dataDir = '/Users/frank25184/desktop/nodejs/nodeForm-team/public/upload/';
 		            }else{
-		            	dataDir = '/var/www/trver.com/public_html'  + '/public/data';
+		            	dataDir = '/var/www/trver.com/public_html/public/upload/';
 		            }
 
 					console.log(dataDir);
-					const photoDir = dataDir + '/upload-logo';
+					let photoDir = dataDir + 'logo/';
 					//existsSync depreciated!! do not use it any more
 					// fs.existsSync(dataDir)  || fs.mkdirSync(dataDir);
 					// fs.existsSync(photoDir) || fs.mkdirSync(photoDir);
 
 					//also can use:
-					fs.stat(dataDir, function(err, stat) {
-					    if(err == null) {
-					        console.log('File exists');
-					        return;
-					    } else if(err.code == 'ENOENT') {
-					        // file does not exist
-					        fs.mkdirSync(dataDir);
-					        return;
-					    } else {
-					        console.log('Some other error: ', err.code);
-					        return;
-					    }
-					});
-
-					fs.stat(photoDir, function(err, stat) {
-					    if(err == null) {
-					        console.log('File exists');
-					        return;
-					    } else if(err.code == 'ENOENT') {
-					        // file does not exist
-					        fs.mkdirSync(photoDir);
-					        return;
-					    } else {
-					        console.log('Some other error: ', err.code);
-					        return;
-					    }
-					});			
+                    utils.checkDir(dataDir);
+					utils.checkDir(photoDir);		
 					// fs.access(dataDir, fs.constants.F_OK, function(err) {
 					//     if (!err) {
 					//         // Do something
@@ -406,85 +382,73 @@ module.exports = {
 				    try{
 				        //store the data to the database
 				        //...
-				        console.info('Received contact from ' + req.user.local.username + " <" + req.user.local.email + '>' );
+				        //console.info('Received contact from ' + req.user.local.username + " <" + req.user.local.email + '>' );
 				        
-				            
-				        
-
 				        const form = new formidable.IncomingForm();
-				        //form.uploadDir = "/public/img";
-
 
 				        form.parse(req,function(err,fields,file){
 
-				            if(err){return res.redirect(303, '/404');}
-				            const photo = file.photo;
-				            
-				            const timeDir = `${req.params.year}${req.params.month}`;
-				            const thedir = photoDir + '/' + timeDir;//prevent uploading file with the same name
+				            if(err){
+									req.flash('error','form parse error:' + err);
+									return res.redirect(500, '/err/500');
+							}else{
+									const photo = file.photo;
+									
+									let personalDir = `${req.user._id}/`;
+									let thedir = photoDir + personalDir;
+									//prevent uploading file with the same name
 
-							fs.stat(thedir, function(err, stat) {
-								console.log('stat parts begins...');
-							    if(err == null) {
-							        console.log('File exists');
-							        return;
-							    } else if(err.code == 'ENOENT') {
-							        // file does not exist
-							        console.log('the file does not exist.now creating...');
-							        fs.mkdirSync(thedir);
-							       
-							        return;
-		                            
-							    } else {
-							        console.log('Some other error: ', err.code);
-							        return;
-							    }
-							});
 
-				            const photoName = Date.now() + photo.name; 
-		                    const fullPath = thedir + '/' + photoName;
 
-		                    // if(!dir){
-		                    //     fs.mkdirSync(dir);
-		                    // }
-		                    console.log('the dir is :' + thedir);
+									const photoName = req.user._id + photo.name; 
+									
+									const fullPath = thedir + photoName;
 
-		                    
-		                    
-		                    console.log(photo.name,photo.path,fullPath);
+									//checkDir need to be passed to have a callback so that the thedir is generated before the rename function being called
+									utils.checkDir(thedir,function(){
+										fs.rename(photo.path, fullPath,function(err){
+											if (err) {console.log(err); return; }
+											console.log('The file has been re-named to: ' + fullPath);
+										});										
+									});
 
-		                     
-		                    fs.renameSync(photo.path, fullPath);//rename or move the file uploaded;and photo.path is the temp file Formidable give
-		                                     
+									 console.log('the dir is :' + thedir);
+									console.log(photo.name,photo.path,fullPath);
+                                    
 
-		                    if(req.user){
-			                    function saveFileInfo(){
-			                    	
-			                    	const user = req.user;
-			                    	user.local.logo = timeDir + '/' + phontoName;
-			                    	user.save(function(err){
-			                    		if(err){throw err}
-			                    		req.flash('success','Upload your logo successfully');
-			                    	    res.redirect('/user/profile');
-			                    	});
+									//rename or move the file uploaded;and photo.path is the temp file Formidable give
+													
+									if(req.user){
+										function saveFileInfo(){
+											
+											const user = req.user;
+											user.local.logo = photoName;
+											user.save(function(err){
+												if(err){throw err}
+												req.flash('success','Upload your logo successfully');
+												res.redirect('/user/profile');
+											});
 
-			                    }
-			                  //  saveFileInfo('upload-photo', fields.email,req.params.year,fields.params.year,fields.params.month,path);
-		                    }else{
-		                    	console.log('user not login');
-		                    	req.flash('eror','You need to login first to upload your logo');
-		                    	res.redirect(303, '/login');
-		                    }
+										}
+										saveFileInfo();
+										// req.flash('success', 'Uploading successfully!');
+										// return res.xhr ? res.json({success: true}) :
+										// res.redirect(303, '/success');
+									//  saveFileInfo('upload-photo', fields.email,req.params.year,fields.params.year,fields.params.month,path);
+									}else{
+										console.log('user not login');
+										req.flash('eror','You need to login first to upload your logo');
+										res.redirect(303, '/login');
+									}								
+							}
+
 
 				            //console.log('received fields:', fields);
 				            //console.log('received files:', photo.name);
 
 				        });
 
-		                req.flash('success', 'Uploading successfully!')
 
-				        return res.xhr ? res.render({success: true}) :
-				            res.redirect(303, '/success');
 				    } catch(ex){
 				        return res.xhr ?
 				            res.json({error: 'Database error.'}):

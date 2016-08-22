@@ -39,7 +39,7 @@
     <a href="/user/updateUser">{{ user.local.username }}</a>
 
         {{#if user.local.logo}}
-            <a href="/user/profile" class="personLogo"><img src="/public/data/upload-logo/{{user.logo}}" ></a>
+            <a href="/user/profile" class="personLogo"><img src="/upload/logo/{{user._id}}/{{user.local.logo}}" ></a>
         {{else}}
             <a href="/user/profile" class="personLogo"><img src="/img/logo.jpg"></a>
         {{/if}}
