@@ -4,3 +4,4 @@ log
 config
 .sass-cache
 public/upload/.sass-cache
+.sass-cache
