@@ -37,7 +37,7 @@ function startServer(){
     
 
    //for setting second domain using vhost
-   require('./secondDomain/api')(app,express);
+   require('./api/api')(app,express);
    require('./lib/hbs')(app);
 
 	app.use(function(req,res,next){

@@ -1,6 +1,6 @@
 <h1>SIGNUP</h1>
 
-<form method="POST" action="/postSignup">
+<form method="POST" action="/user/postSignup">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
     userName: <input type="text" name="username">
@@ -13,6 +13,6 @@
 
     <hr>
 
-    <p>Need an account? <a href="/login">LOGIN</a></p>
+    <p>Need an account? <a href="/user/login">LOGIN</a></p>
     <p>Or go <a href="/">home</a>.</p>
 

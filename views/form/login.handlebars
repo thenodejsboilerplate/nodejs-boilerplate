@@ -2,7 +2,7 @@
 <h3><a href="/auth/google">Sign In with Google</a></h3>
 <h3><a href="/auth/github">Sign In with Github</a></h3>
 
-<form method="POST" action="/postLogin">
+<form method="POST" action="/user/postLogin">
     <input type="hidden" name="_csrf" value="{{csrfToken}}">
     <label>
     Email: <input type="email" name="email">
@@ -18,5 +18,5 @@
 
     <hr>
 
-    <p>Need an account? <a href="/signup">signup</a></p>
-    <p>Or go <a href="/forgotPassword">Forget your Password</a>.</p>
+    <p>Need an account? <a href="/user/signup">signup</a></p>
+    <p>Or go <a href="/user/forgotPassword">Forget your Password</a>.</p>

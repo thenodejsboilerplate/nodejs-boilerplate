@@ -13,7 +13,6 @@ const flash        = require('connect-flash'),
 module.exports = {
 
 		signup: function(req,res){
-
 					//render the page and pass in any flash data if it exists, req.flash is provided by connect-flash
 				    res.render('form/signup', { 
 			            messages: {
@@ -104,7 +103,7 @@ module.exports = {
 						User.findOne({ 'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() } }, function(err, user) {
 								    if (!user) {
 								      req.flash('error', 'Password reset token is invalid or has expired.');
-								      res.redirect('/forgotPassword');
+								      res.redirect('/user/forgotPassword');
 								    }
 								    res.render('form/resetPwFields', {
 										    user: req.user,
@@ -129,7 +128,7 @@ module.exports = {
 		               if(password.length < 5){
 		               	       req.flash('error', 'Password field must be more than 5 characters!');
 
-		                       res.redirect('err/404');
+		                       res.redirect('response/err/404');
 		               }
 		               const newPassword = user.generateHash(password);
 		               // user.local.resetPasswordToken = undefined;
@@ -154,7 +153,7 @@ module.exports = {
 		               	  		console.log(err.stack,raw);
 
 		               	  		req.flash('error', 'There was a error processing your request!');
-		               	  		res.redirect(303,'/reset/'+ req.params.token);
+		               	  		res.redirect(303,'/user/reset/'+ req.params.token);
 		               	  	}
 		 
 
@@ -203,7 +202,7 @@ module.exports = {
 					                        if(err){console.log(err);}
 									        if (!user) {
 									          req.flash('error', 'No account with that email address exists.');
-									          res.redirect('/forgotPassword');
+									          res.redirect('/user/forgotPassword');
 									        }
 									        let expires = Date.now() + 3600000;
 
@@ -216,14 +215,14 @@ module.exports = {
 					                        mailService.send(user.local.email, 'Password Reset', 
 												          '<p>You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
 												          'Please click on the following link, or paste this into your browser to complete the process(the password reset will be invalid in 1 hour ):</p>\n\n' +
-												          '<strong> http://' + req.headers.host + '/reset/' + token + '</strong>\n\n' +
+												          '<strong> http://' + req.headers.host + '/user/reset/' + token + '</strong>\n\n' +
 												          '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>\n'
 
 					                        	);
 									        user.save(function(err) {
 					                            if (err){throw err;}
 					                            req.flash('info', 'An e-mail has been sent to ' + user.local.email + ' with further instructions.!');
-					                            res.redirect('/login');
+					                            res.redirect('/user/login');
 					                            //return done(null, user, );
 
 									        });
@@ -247,7 +246,7 @@ module.exports = {
 										if(err){console.log(err);}
 										if (!user) {
 											req.flash('error', 'Your logined user\'s email seems not found in our system! Please logout and login again!');
-											res.redirect('/login');
+											res.redirect('/user/login');
 										}else{
 												user.local.username = req.body.username;
 												user.local.email = req.body.email;
@@ -317,30 +316,35 @@ module.exports = {
 
 		     return function(req, res, next) {
 				  passport.authenticate('local-signup', function(err, user, info) {
-				    if (err) { return next(err); }
-				    if (!user) {
-				        req.flash('error', 'No such user exists'); 
-				    	return res.redirect('/signup'); 
-				    }
+				    if (err) { return next(err); }else{
+								if (!user) {
+									//req.flash('error', 'No such user exists'); 
+									return res.redirect('/user/signup'); 
+								}else{
+										req.logIn(user, function(err) {
+												if (err) { return next(err); }
+												res.render('email/signupMessage',
+														{layout:null, user:user}, function(err,html){
+															if(err){console.log('err in email template', err);}
+															try{
+																mailService.send(user.local.email,'Thanks for your signup!',html);
+															}catch(ex){
+																mailService.mailError('the email widget broke down!', __filename,ex);
+															}
+															
+														}
 
-				    req.logIn(user, function(err) {
-				      if (err) { return next(err); }
-				      res.render('email/signupMessage',
-				           	   {layout:null, user:user}, function(err,html){
-				           	   	   if(err){console.log('err in email template', err);}
-				           	   	   try{
-				           	   	   	  mailService.send(user.local.email,'Thanks for your signup!',html);
-				           	   	   }catch(ex){
-				           	   	   	  mailService.mailError('the email widget broke down!', __filename,ex);
-				           	   	   }
-				                   
-				           	   }
+												);
+												req.flash('success','You login successfully and welcome to your dashboard!');
+												return res.redirect('/user/profile');
 
-				      );
-				      req.flash('success','You login successfully and welcome to your dashboard!');
-				      return res.redirect('/user/profile');
+										});
+								}
 
-				    });
+					}
+
+					
+
 				  })(req, res, next);
 		     };
  
@@ -352,7 +356,7 @@ module.exports = {
 						    if (err) { return next(err); }
 						    if (!user) { 
 						    	req.flash('error','Something wrong with the Password or email!')
-						    	return res.redirect('/login'); 
+						    	return res.redirect('/user/login'); 
 						    }
 						    req.logIn(user, function(err) {
 						    	if (err) { return next(err); }
@@ -370,9 +374,9 @@ module.exports = {
 		       return function(req,res){
                     let dataDir;
 		            if(app.get('env')=== 'development'){
-		            	dataDir = '/Users/frank25184/desktop/nodejs/nodeForm-team/public/upload/';
+		            	dataDir = config.uploadDir.development;
 		            }else{
-		            	dataDir = '/var/www/trver.com/public_html/public/upload/';
+		            	dataDir = config.uploadDir.production;
 		            }
 
 					console.log(dataDir);
@@ -422,7 +426,7 @@ module.exports = {
 
 				            if(err){
 									req.flash('error','form parse error:' + err);
-									return res.redirect(500, '/err/500');
+									return res.redirect(500, '/response/err/500');
 							}else{
 									const photo = file.photo;
 									
@@ -470,7 +474,7 @@ module.exports = {
 									}else{
 										console.log('user not login');
 										req.flash('eror','You need to login first to upload your logo');
-										res.redirect(303, '/login');
+										res.redirect(303, '/user/login');
 									}								
 							}
 
@@ -484,7 +488,7 @@ module.exports = {
 				    } catch(ex){
 				        return res.xhr ?
 				            res.json({error: 'Database error.'}):
-				            res.redirect(303, '/error/500');
+				            res.redirect(303, '/response/error/500');
 				    }
 		       };
 

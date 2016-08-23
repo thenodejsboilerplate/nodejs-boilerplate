@@ -5,7 +5,7 @@ const vhost = require('vhost'),
       //it's fine to load outside resources. we use CORS principle only when we use ajax to load resources
       cors  = require('cors'),
       corsOptions = {
-           origin: 'http:///frank'//http://trver.com
+           origin: 'http://api.frank'//http://trver.com
       };
 
 module.exports = (app,express)=>{
