@@ -91,9 +91,6 @@ module.exports   = function(app, passport,User) {
 
 
 
-
-
-
         //404:not found; 400 wrong request;401 not authorized
 	    app.get('/success', respond.success);
 		app.get('/err/500', respond.Error500);//server error
