@@ -101,7 +101,7 @@ module.exports   = function(app, passport,User) {
 
         app.post('/reset/:token', user.postResetToken);
 		app.post('/postForgotPassword', user.postForgotPassword(User));
-        app.put('/update/updateUser',auth.isLoggedIn, user.putUpdateUser);        
+        app.post('/update/updateUser',auth.isLoggedIn, user.putUpdateUser(User));        
 		app.post('/postSignup', user.postSignup(passport));        
         app.post('/postLogin', user.postLogin(passport));
 

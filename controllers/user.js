@@ -238,9 +238,41 @@ module.exports = {
 		      };
 		},
 
-		putUpdateUser: function(req,res){
-		              
+		putUpdateUser: function(User){
+		       return function(req,res){
+		            let   locals    = req.user.local, 
+					      username = locals.username,
+					      email    = locals.email;
+							User.findOne({ 'local.email': email }, function(err, user) {
+										if(err){console.log(err);}
+										if (!user) {
+											req.flash('error', 'Your logined user\'s email seems not found in our system! Please logout and login again!');
+											res.redirect('/login');
+										}else{
+												user.local.username = req.body.username;
+												user.local.email = req.body.email;
+												mailService.send(user.local.email, 'User Upadate', 
+																'<p>You have successfully update your information!</p>'+
+																'Your new username:'+ req.body.username +'/n'+
+																'Your new email:' + req.body.email
+												);
+												user.save(function(err) {
+													if (err){throw err;}
+													req.flash('success', 'You have successfully update your information!');
+													res.redirect('/user/profile');
+													//return done(null, user, );
+
+												});											
+										}
+
+
+
+								}); 
+				    
+					
+		        };
 		},
+
 
 		logout: function(req,res){
 					//req.logout();
