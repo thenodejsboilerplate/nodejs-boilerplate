@@ -6,21 +6,25 @@ module.exports = {
 		    // if user is authenticated in the session, carry on 
 		    if (req.isAuthenticated()){ 
 		        return next();
-		    }
-		    req.flash('error','You need to login first to access the page!');
-		    // if they aren't redirect them to the home page
-		    res.redirect('/');
+		    }else{
+				req.flash('error','You need to login first to access the page!');
+				// if they aren't redirect them to the home page
+				res.redirect('/user/login');
+			}
+
 		},
 
 		notLoggedIn: function (req, res, next) {
 
 		    // if user is authenticated in the session, carry on 
-		    if (req.user){
+		    if (req.isAuthenticated()){
 			    req.flash('error','You have already logined!');
 			    // if they aren't redirect them to the home page
-			    res.redirect('/');
-		    }
-		    return next();
+			    res.redirect('back');
+		    }else{
+               return next();
+			}
+		    
 
 		},
 		//roles is a string with , ,eg:"customer,seller"

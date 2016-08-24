@@ -18,9 +18,8 @@ module.exports = function(app,User,passport){
         //     res.send('Update the book');
         //   });
 
-
         router.get('/signup',auth.notLoggedIn, user.signup);
-        router.get('/login',auth.notLoggedIn,user.login);
+        router.get('/login',auth.notLoggedIn, user.login);
         router.get('/fileupload',auth.isLoggedIn, user.fileupload);
         // we will want this protected so you have to be logged in to visit
         // we will use route middleware to verify this (the isLoggedIn function)
