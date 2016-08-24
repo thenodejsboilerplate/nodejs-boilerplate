@@ -56,17 +56,19 @@ module.exports = {
 			    	const created_at = moment(req.user.local.created_at).format('MMMM Do YYYY, h:mm:ss a');
 			        res.render('users/profile', {
 
-			            user : {
-			            	id: req.user._id,
-			            	username: req.user.local.username,
-			            	email: req.user.local.email,
-			            	logo: req.user.local.logo,
-			            	created_at: created_at,
+			            // user : {
+			            // 	id: req.user._id,
+			            // 	username: req.user.local.username,
+			            // 	email: req.user.local.email,
+			            // 	logo: req.user.local.logo,
+			            // 	created_at: created_at,
 
-			            	//password: req.user.local.password,
+			            // 	//password: req.user.local.password,
 
 
-			            },
+			            // },
+						user: req.user,
+						created_at: created_at,
 			            messages: {
 			            	error: req.flash('error'),
 			            	success: req.flash('success'),
@@ -243,7 +245,7 @@ module.exports = {
 					      username = locals.username,
 					      email    = locals.email;
 							User.findOne({ 'local.email': email }, function(err, user) {
-										if(err){console.log(err);}
+										if(err){console.log(err);return;}
 										if (!user) {
 											req.flash('error', 'Your logined user\'s email seems not found in our system! Please logout and login again!');
 											res.redirect('/user/login');
@@ -442,16 +444,15 @@ module.exports = {
 
 									//checkDir need to be passed to have a callback so that the thedir is generated before the rename function being called
 									utils.checkDir(thedir,function(){
-										fs.rename(photo.path, fullPath,function(err){
+										fs.rename(photo.path, fullPath, function(err){
 											if (err) {console.log(err); return; }
 											console.log('The file has been re-named to: ' + fullPath);
 										});										
 									});
 
-									 console.log('the dir is :' + thedir);
+									console.log('the dir is :' + thedir);
 									console.log(photo.name,photo.path,fullPath);
                                     
-
 									//rename or move the file uploaded;and photo.path is the temp file Formidable give
 													
 									if(req.user){

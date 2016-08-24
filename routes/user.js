@@ -4,11 +4,6 @@ const express = require('express'),
       user = require('../controllers/user'),
       auth = require('../middlewares/auth');
 
-
-
-
-
-
 module.exports = function(app,User,passport){
         router.get('/reset/:token', user.getResetToken);
         router.post('/reset/:token', user.postResetToken);

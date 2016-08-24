@@ -59,6 +59,7 @@ function startServer(){
 	const client = require('./lib/redis');
 	app.use(session({
 	    secret: config.session_secret,
+		cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
 	    // create new redis store.
 	    store: new redisStore({port:config.db.redis.development.port, host:config.db.redis.development.host,ps:config.db.redis.development.pw, ttl :  config.db.redis.development.ttl}),//Redis session TTL (expiration) in seconds
 	    //saveUninitialized: false,

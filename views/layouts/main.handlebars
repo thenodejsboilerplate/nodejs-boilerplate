@@ -38,20 +38,20 @@
     <a href="/user/logout">Logout</a>
     <a href="/user/updateUser">{{ user.local.username }}</a>
 
-        {{#if user.local.logo}}
-            <a href="/user/profile" class="personLogo"><img src="/upload/logo/{{user._id}}/{{user.local.logo}}" ></a>
-        {{else}}
-            <a href="/user/profile" class="personLogo"><img src="/img/logo.jpg"></a>
-        {{/if}}
+    {{#if user.local.logo}}
+        <a href="/user/profile" class="personLogo"><img src="/upload/logo/{{user._id}}/{{user.local.logo}}" ></a>
+    {{else}}
+        <a href="/user/profile" class="personLogo"><img src="/img/logo.jpg"></a>
+    {{/if}}
 
-  {{else}}
-    <a href="/about">about</a>
-    <a href="/">home</a>
-    <a href="/user/fileupload">fileUpload</a>
-    <a href="/user/login">login</a>
-    <a href="/user/signup">Signup</a>
+    {{else}}
+        <a href="/about">about</a>
+        <a href="/">home</a>
+        <a href="/user/fileupload">fileUpload</a>
+        <a href="/user/login">login</a>
+        <a href="/user/signup">Signup</a>
 
-   {{/if}}
+    {{/if}}
 
 </li>
 
