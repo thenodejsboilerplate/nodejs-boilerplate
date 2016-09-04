@@ -1,9 +1,9 @@
 //./models/User.js
-// grab the things we need
-var mongoose = require('mongoose');
-var bcrypt   = require('bcrypt-nodejs');
-
-var Schema = mongoose.Schema;
+"use strict";
+const mongoose = require('mongoose'),
+      bcrypt   = require('bcrypt-nodejs'),
+      moment = require('moment'),
+      Schema = mongoose.Schema;
 
 // create a schema
 //The allowed SchemaTypes are:
@@ -61,7 +61,7 @@ var userSchema = new Schema({
 
 
 // on every save, add the date
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function(next){
   // get the current date
   var currentDate = new Date();
   
@@ -110,16 +110,34 @@ userSchema.pre('save', function(next) {
 
 // methods ======================
 // generating a hash
-userSchema.methods.generateHash = function(password) {
+userSchema.methods.generateHash = password=> {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
 // checking if password is valid
+
+//in arrow-functions , the 'this'' value of the following statement is : window; // or the global object
+//as to arrow function inside a function,  it's the this of the outer function
+//arrow function expressions are best suited for non-method functions. 
 userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.local.password);
 };
 
+userSchema.methods.time = time=> {
+    return moment(time).format('L');
+};
 
+userSchema.methods.processUser = user=>{
+    return {
+        _id: user._id,
+        username: user.local.username,
+        email: user.local.email,
+        logo: user.local.logo,
+        active: user.local.active,      
+        created_at: moment(user.local.created_at).format('L'),
+        updated_at: moment(user.local.updated_at).format('L'),        
+    };
+};
 
 
 // the schema is useless so far

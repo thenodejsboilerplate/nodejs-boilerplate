@@ -1,0 +1,13 @@
+Comment Length: {{comments.length}}
+{{#each comments}}
+  <p><a href="">{{this.author}}</a>
+  <span class="info"> Replay At {{this.created_at}}</span></p>
+  <p>{{this.content}}</p>
+{{/each}}
+
+<form method="post" action="/post/comment">
+  <input type="hidden" value="{{post.title}}" name="title">
+  <textarea name="content" rows="5" cols="80"></textarea> <br/>
+
+  <input type="submit" value="Leave a message" />
+</form>

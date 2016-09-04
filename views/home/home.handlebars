@@ -3,6 +3,17 @@
     <link rel="stylesheet" href="{{static '/css/example.css'}}">
 {{/extend}}
 <h1>welcome to the home page</h1>
+<span>
+    <form action="/post/search" method="GET">
+    <input type="text" name="keyword" placeholder="SEARCH" class="search" />
+    <input type="submit" value="submit">
+    </form>
+</span>
+<!--<p>Your fortune of the day: </p>
+<blockquote>{{fortune}}</blockquote>-->
 
-<p>Your fortune of the day: </p>
-<blockquote>{{fortune}}</blockquote>
+<br>
+
+<h2>ALL THE POSTS</h2>
+
+    {{> post/postsLoop}}

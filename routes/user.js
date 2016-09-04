@@ -23,7 +23,7 @@ module.exports = function(app,User,passport){
         router.get('/fileupload',auth.isLoggedIn, user.fileupload);
         // we will want this protected so you have to be logged in to visit
         // we will use route middleware to verify this (the isLoggedIn function)
-        router.get('/profile', auth.isLoggedIn, user.profile);
+        router.get('/profile/:user_id', user.profile);
         router.get('/updateUser', auth.isLoggedIn, user.updateUser);
         router.get('/forgotPassword', auth.notLoggedIn, user.forgotPassword);
         router.get('/logout', auth.isLoggedIn,user.logout);	

@@ -1,0 +1,23 @@
+   <h2>FULL SINGLE PAGE</h2>
+    {{#if post}}
+          
+        <li>
+        <h2>{{post.title}}</h2>
+        <p><a href="#">{{post.category}}</a></p>
+        <p class="info">
+        Author：<a href="/user/profile/{{post.user_id}}">{{ postUser.username }}</a> | 
+        Time：{{ post.created_at }} | 
+            {{#each post.tags}}
+            <span style="display:inline-block;border:1px solid grey;">{{name}}</span>
+            {{/each}} |
+            {{post.pv}}'s reading
+
+        </p>
+        <p>{{ post.content }}</p>
+        </li>
+
+    {{/if}}
+
+    {{> post/comment }}
+                                   
+

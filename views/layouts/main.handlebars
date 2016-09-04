@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <!-- All css Files Here -->
-    <link rel="stylesheet" type="text/css" href="{{static '/release/css/app.min1096a740.css'}}">
+    <!--<link rel="stylesheet" type="text/css" href="{{static '/release/css/app.min1096a740.css'}}">-->
+        <link rel="stylesheet" type="text/css" href="/release/css/app.min1096a740.css">
       {{{block "css"}}} <!--for express-handlebar custom style-->
     <style>
       a.personLogo{
@@ -34,14 +35,15 @@
     <a href="/about">about</a>
     <a href="/">home</a>
     <a href="/user/fileupload">fileUpload</a>
+    <a href="/post/make">POST</a>
 
     <a href="/user/logout">Logout</a>
-    <a href="/user/updateUser">{{ user.local.username }}</a>
+    <a href="/user/updateUser">{{ user.username }}</a>
 
-    {{#if user.local.logo}}
-        <a href="/user/profile" class="personLogo"><img src="/upload/logo/{{user._id}}/{{user.local.logo}}" ></a>
+    {{#if user.logo}}
+        <a href="/user/profile/{{user._id}}" class="personLogo"><img src="/upload/logo/{{user._id}}/{{user.logo}}" ></a>
     {{else}}
-        <a href="/user/profile" class="personLogo"><img src="/img/logo.jpg"></a>
+        <a href="/user/profile/{{user._id}}" class="personLogo"><img src="/img/logo.jpg"></a>
     {{/if}}
 
     {{else}}
@@ -50,6 +52,7 @@
         <a href="/user/fileupload">fileUpload</a>
         <a href="/user/login">login</a>
         <a href="/user/signup">Signup</a>
+        <a href="" class="personLogo"><img src="/img/logo.jpg"></a>
 
     {{/if}}
 
@@ -70,7 +73,7 @@
 
 
 
-<script src="{{static '/release/js/app.min.08c5359b.js'}}"></script>
+<script src="{{static '/release/js/app.min.bfc01524.js'}}"></script>
 {{#if showTests}}
     <div id="mocha"></div>
     <script src="{{static '/vendor/mocha.js'}} "></script>
@@ -107,10 +110,6 @@
             $('header img.ccartIcon').atttr('src', cart.isEmpty()?static.IMG_CART_EMPTY:static.IMG_CART_FULL );
         });
     </script>
-
-
-
-
 
 
 

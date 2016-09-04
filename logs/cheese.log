@@ -58,3 +58,12 @@ Error: connect ECONNREFUSED 127.0.0.1:6379
     at Object.exports._errnoException (util.js:870:11)
     at exports._exceptionWithHostPort (util.js:893:20)
     at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1061:14)
+[2016-09-03 08:58:04.041] [ERROR] cheese - connect to redis error, check your redis config { Error: connect ECONNREFUSED 127.0.0.1:6379
+    at Object.exports._errnoException (util.js:1026:11)
+    at exports._exceptionWithHostPort (util.js:1049:20)
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1081:14)
+  code: 'ECONNREFUSED',
+  errno: 'ECONNREFUSED',
+  syscall: 'connect',
+  address: '127.0.0.1',
+  port: 6379 }

@@ -112,76 +112,94 @@ module.exports = function(grunt){
         },
 
 
-        //监听变化 默认grunt watch 监测所有开发文件变化
-        watch: {
-            options: {
-                //enable live reloading,default:false;If enabled a live reload server will be started with the watch task per target. Then after the indicated tasks have run, the live reload server will be triggered with the modified files.
-                livereload: true,
-                  
-                //显示日志
-                dateFormat: function(time) {
-                    grunt.log.writeln('编译完成,用时' + time + 'ms ' + (new Date()).toString());
-                    grunt.log.writeln('Wating for more changes...');
-                }
-            },
-            //css
-            sass: {
-                files: '<%= paths.scss %>/**/*.scss',
-                tasks: ['sass']
-            },
-            css: {
-                files: '<%= paths.css %>/**/*.css',
-                tasks: ['cssmin']
-            },
-            js: {
-                files: '<%= paths.js %>/**/*.js',
-                tasks: ['uglify:dist']
-            },
-            
-            
-         //若不使用Sass，可通过grunt watch:base 只监测style.css和js文件
-         //base: {
-          //files: ['<%= paths.css %>/**/*.css', '<%= paths.js %>/**/*.js', 'img/**'],
-                //tasks: ['cssmin', 'uglify', 'copy:images']
-          //} 
-         //},
+// watch: {
+//   options: {
+//     dateFormat: function(time) {
+//       grunt.log.writeln('The watch finished in ' + time + 'ms at' + (new Date()).toString());
+//       grunt.log.writeln('Waiting for more changes...');
+//     },
+//   },
+//   scripts: {
+//     files: 'public/**/*',
+//     tasks: ['sass','cssmin','uglify:dist','hashres'],
+//   },
+// },
+
+watch: {
+  options: {
+    dateFormat: function(time) {
+      grunt.log.writeln('The watch finished in ' + time + 'ms at' + (new Date()).toString());
+      grunt.log.writeln('Waiting for more changes...');
+    },
+  },
+
+  css: {
+    files: ['<%= paths.scss %>/**/*.scss'],
+    tasks: ['sass','cssmin','hashres'],
+    // options: {
+    //   livereload: true,
+    // },
+  },
+
+  js: {
+    files: ['<%= paths.js %>/**/*.js'],
+    tasks: ['uglify','hashres'],
+  },
 
 
-         },
+},
+
+
+        // watch: {
+
+        //     configFiles: {
+        //         files: ['**/*.js'],
+        //         tasks: ['sass','cssmin','uglify'],
+        //         options: {
+        //             dateFormat: function(time) {
+        //                 grunt.log.writeln('The watch finished in ' + time + 'ms at' + (new Date()).toString());
+        //                 grunt.log.writeln('Waiting for more changes...');
+        //             },
+        //             livereload: true,
+        //         },                
+        //     },
+        // },
+
+
 
          lint_pattern: {
-            view_statics: {
-                options: {
-                    rules: [
-                       {
-                        pattern: /<link [^>]*href=["'](?!\{\{static )/,
-                        message: 'Un-mapped static resource found in <link>.'
-                       },
+            // view_statics: {
+            //     options: {
+            //         rules: [
+            //            {
+            //             pattern: /<link [^>]*href=["'](?!\{\{static )/,
+            //             message: 'Un-mapped static resource found in <link>.'
+            //            },
 
-                       {
-                        pattern: /<script [^>]*src=["'](?!\{\{static )/,
-                        message: 'Un-mapped static resource found in <script>.'
-                       },
+            //            {
+            //             pattern: /<script [^>]*src=["'](?!\{\{static )/,
+            //             message: 'Un-mapped static resource found in <script>.'
+            //            },
 
-                       {
-                        pattern: /<img [^>]*href=["'](?!\{\{static )/,
-                        message: 'Un-mapped static resource found in <img>.'
-                       },
+            //            {
+            //             pattern: /<img [^>]*href=["'](?!\{\{static )/,
+            //             message: 'Un-mapped static resource found in <img>.'
+            //            },
 
 
-                    ],
-                },//end of options
+            //         ],
+            //     },//end of options
 
-                files: {
-                    src: [
+            //     files: {
+            //         src: [
                    
-                        'views/**/*.handlebars',
-                    ],
+            //             'views/**/*.handlebars',
+            //         ],
                     
-                },
+            //     },
 
 
-            },//end of view_statics
+            // },//end of view_statics
 
             css_statics: {
                 options: {
@@ -209,8 +227,8 @@ module.exports = function(grunt){
 
 
     //regiter task
-    grunt.registerTask('watch',['watch']);
-    grunt.registerTask('default', ['lint_pattern','sass','cssmin','uglify:dist','hashres']/*, 'jshint'//*,'exec'*/);
+    //grunt.registerTask('watch',['watch']);
+    grunt.registerTask('default', [/**'lint_pattern', */'sass','cssmin','uglify:dist','hashres']/*, 'jshint'//*,'exec'*/);
     grunt.registerTask('test', [/**'cafemocha',**/'lint_pattern']/*, 'jshint'//*,'exec'*/);
     grunt.registerTask('static', ['sass','cssmin','uglify:dist','hashres']);
 };

@@ -12,14 +12,14 @@ const appDir = path.dirname(require.main.filename);
 
 
 
-module.exports = function(app){
+module.exports = app=>{
 	app.use(function(req,res,next){
 		const path = req.path.toLowerCase();
 		console.log(path);
 		if(autoViews[path]) {
 			res.render('static/' + autoViews[path]);
 		}else{
-			fs.stat(appDir+'/views/static' + path + '.handlebars', function(err, stat) {
+			fs.stat(appDir+'/views/static' + path + '.handlebars', (err, stat)=> {
 			    if(err == null) {
 			        console.log('File exists');
 			        autoViews[path] = path.replace(/^\//,'');

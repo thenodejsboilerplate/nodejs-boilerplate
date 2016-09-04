@@ -1,0 +1,35 @@
+<form method="post" action="/post/edit/{{ post._id }}">
+
+  <label>
+  Title：<br />
+  <input type="text" name="title" placeholder="title" value="{{post.title}}" />
+  </label><br />
+
+   <label>
+  Tags：<br />
+  <input type="text" name="tags" placeholder="use ',' to seperate between tags" value="{{post.tags}}" />
+  </label> <br />
+
+   <label>
+  Category：<br />
+  <select name="category" value="{{post.category}}">
+    <option selected>Category 1</option>
+    <option>Category 2</option>
+    <option>Category 3</option>
+    <option>Category 4</option>
+  </select>
+  </label> <br />
+
+   <label>
+  Introduction：<br />
+  <input type="text" name="intro" placeholder="The introduction about the post, less than 200 words!" value="{{post.intro}}"/>
+  </label> <br />
+
+
+  <label>
+  Content：<br />
+  <textarea name="content" rows="20" cols="100" placeholder="Content">{{post.content}}</textarea><br />
+  </label>
+
+  <input type="submit" value="Save Edit" />
+</form>

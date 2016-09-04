@@ -2,3 +2,4 @@
 @function static($name){
   @return 'url("http://localhost")' + $name;
 }
+//

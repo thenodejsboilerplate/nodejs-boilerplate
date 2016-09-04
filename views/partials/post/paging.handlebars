@@ -1,0 +1,19 @@
+<div>
+  {{#unless isFirstPage }}
+    {{#if keyword}}
+    <span class="prepage"><a title="上一页" href="?keyword={{keyword}}&&p={{ math page "-" "1" }}">上一页</a></span>
+    {{else}}
+    <span class="prepage"><a title="上一页" href="?p={{ math page "-" "1" }}">上一页</a></span>
+    {{/if}}
+    <!--<span class="nextpage disabled" style="color:grey">下一页</span>-->
+  {{/unless}}
+
+  {{#unless isLastPage }}
+    {{#if keyword}}
+    <!--<span class="nextpage disabled" style="color:grey">上一页</span>-->
+    <span class="nextpage"><a title="下一页" href="?keyword={{keyword}}&&p={{ math page "+" "1" }}">下一页</a></span>
+    {{else}}
+    <span class="nextpage"><a title="下一页" href="?p={{ math page "+" "1" }}">下一页</a></span>
+    {{/if}}
+  {{/unless }}
+</div>

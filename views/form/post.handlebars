@@ -1,0 +1,43 @@
+<form method="post" action="/post/post">
+  <label>
+  
+  Title：<br />
+  <input type="text" name="title" placeholder="title"/>
+  </label><br />
+
+   <label>
+  Tags：<br />
+  <input type="text" name="tags" placeholder="use ',' to seperate between tags"/>
+  </label> <br />
+
+   <label>
+  Category：<br />
+  <select name="category">
+    <option selected>Category 1</option>
+    <option>Category 2</option>
+    <option>Category 3</option>
+    <option>Category 4</option>
+  </select>
+  </label> <br />
+
+   <label>
+  Introduction：<br />
+  <input type="text" name="intro" placeholder="The introduction about the post, less than 200 words!"/>
+  </label> <br />
+
+
+  <label>
+  Content：<br />
+  <textarea name="content" rows="20" cols="100" placeholder="Content" id="editor"></textarea><br />
+  </label>
+   
+  <input type="submit" value="POST" />
+</form>
+
+{{#extend "js"}}
+	<script src="/ckeditor/ckeditor.js"></script>
+	<script src="/js/editor/editor.js"></script>    
+  <script>
+	initSample();
+  </script>
+{{/extend}}

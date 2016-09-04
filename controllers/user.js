@@ -8,11 +8,14 @@ const flash        = require('connect-flash'),
     moment = require('moment'),
     path = require('path'),
     fs = require('fs'),
-	utils = require('../lib/utility');
+	utils = require('../lib/utility'),
+	Post = require('../models/Post'),
+	User = require('../models/User'),
+	postProxy = require('../db_proxy/post');
 
 module.exports = {
 
-		signup: function(req,res){
+		signup: (req,res)=>{
 					//render the page and pass in any flash data if it exists, req.flash is provided by connect-flash
 				    res.render('form/signup', { 
 			            messages: {
@@ -20,11 +23,11 @@ module.exports = {
 			            	success: req.flash('success'),
 			            	info: req.flash('info'),
 			            }, 
-				    	user: req.user,
+				    	user: req.user ? req.user.processUser(req.user) : req.user,
 				    });
 		},
 
-		login: function(req,res){
+		login: (req,res)=>{
 					//render the page and pass in any flash data if it exists
 				    res.render('form/login', { 
 			            messages: {
@@ -32,11 +35,11 @@ module.exports = {
 			            	success: req.flash('success'),
 			            	info: req.flash('info'),
 			            }, 
-				    	user: req.user,
+				    	user: req.user ? req.user.processUser(req.user) : req.user,
 				    });
 		},
 
-		fileupload: function(req,res){
+		fileupload: (req,res)=>{
 				    var now = new Date();
 				    res.render('form/fileupload', {
 			            messages: {
@@ -46,40 +49,20 @@ module.exports = {
 			            },		    	
 				        year: now.getFullYear(),
 				        month: now.getMonth(),//0-11
-				        user: req.user,
+				        user: req.user ? req.user.processUser(req.user) : req.user,
 			            
 				    });
 		},
 
 
-		profile: function(req, res) {
-			    	const created_at = moment(req.user.local.created_at).format('MMMM Do YYYY, h:mm:ss a');
-			        res.render('users/profile', {
-
-			            // user : {
-			            // 	id: req.user._id,
-			            // 	username: req.user.local.username,
-			            // 	email: req.user.local.email,
-			            // 	logo: req.user.local.logo,
-			            // 	created_at: created_at,
-
-			            // 	//password: req.user.local.password,
-
-
-			            // },
-						user: req.user,
-						created_at: created_at,
-			            messages: {
-			            	error: req.flash('error'),
-			            	success: req.flash('success'),
-			            	info: req.flash('info'),
-			            }, // get the user out of session and pass to template
-			        });
+		profile: (req, res)=> {
+				    const user_id = req.params.user_id;
+                    postProxy.getPostsByUserId(req,res,user_id,'users/profile');
 		},
 
-		updateUser: function(req,res){
+		updateUser: (req,res)=>{
 		        	res.render('form/userUpdate', {
-		 	            user : req.user,
+		 	            user : req.user ? req.user.processUser(req.user) : req.user,
 			            messages: {
 			            	error: req.flash('error'),
 			            	success: req.flash('success'),
@@ -90,9 +73,9 @@ module.exports = {
 		        	});
 		},
 
-		forgotPassword: function(req, res) {
+		forgotPassword: (req, res)=> {
 				  res.render('form/resetPw', {
-				    user: req.user,
+				    user: req.user ? req.user.processUser(req.user) : req.user,
 		            messages: {
 		            	error: req.flash('error'),
 		            	success: req.flash('success'),
@@ -101,14 +84,14 @@ module.exports = {
 				  });
 		},
 
-		getResetToken: function(req, res) {
-						User.findOne({ 'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() } }, function(err, user) {
+		getResetToken: (req, res)=> {
+						User.findOne({ 'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() } }, (err, user)=> {
 								    if (!user) {
 								      req.flash('error', 'Password reset token is invalid or has expired.');
 								      res.redirect('/user/forgotPassword');
 								    }
 								    res.render('form/resetPwFields', {
-										    user: req.user,
+										    user: req.user ? req.user.processUser(req.user) : req.user,
 								            messages: {
 								            	error: req.flash('error'),
 								            	success: req.flash('success'),
@@ -118,58 +101,69 @@ module.exports = {
 				        });
 		},
 
-		postResetToken: function(req,res){//we do not specify specific action route for the /reset/:token page, so it will use the /reset/:token as its action route
-			  
-		       	  User.findOne({'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() }}, function(err,user){
+		postResetToken: (req,res)=> {//we do not specify specific action route for the /reset/:token page, so it will use the /reset/:token as its action route
+			  						
+			      const promis = new Promise(function(resolve,reject){
+						// console.log('working fine up the update function');
+						User.findOne({'local.resetPasswordToken': req.params.token, 'local.resetPasswordExpires': { $gt: Date.now() }}, function(err,user){
+							if(!user){
+								reject(`Password reset token is invalid or has expired`);
+							}else{
+								resolve(user);
+							}
+					   });
+				  });
 
-		       	  	   if(!user){
-				          req.flash('error', 'Password reset token is invalid or has expired.');
-				          res.redirect('back');
-		       	  	   }
-		       	  	   const password = req.body.password;
-		               if(password.length < 5){
-		               	       req.flash('error', 'Password field must be more than 5 characters!');
+				  promis.then(function(user){
 
-		                       res.redirect('response/err/404');
-		               }
-		               const newPassword = user.generateHash(password);
-		               // user.local.resetPasswordToken = undefined;
-		               // user.local.resetPasswordExpires = undefined;
-		               //user.local.password = newPassword;
-					  const conditions = { 'local.active': true, 'local.email':req.body.email },
-					  
-					      update = {'local.password':  newPassword,
-					             'local.resetPasswordToken': undefined,
-					             'local.resetPasswordExpires': undefined},
-					      ////$push: {sku: req.body.sku},
-					      options = {upsert: true};
-					     // console.log('working fine up the update function');
-		             
+						const password = req.body.password;
+						if(password.length < 5){
+								req.flash('error', 'Password field must be more than 5 characters!');
+
+								res.redirect('response/err/404');
+						}
+						const newPassword = user.generateHash(password);
+						// user.local.resetPasswordToken = undefined;
+						// user.local.resetPasswordExpires = undefined;
+						//user.local.password = newPassword;
+						const conditions = { 'local.active': true, 'local.email':req.body.email },
+						
+						update = {'local.password':  newPassword,
+								'local.resetPasswordToken': undefined,
+								'local.resetPasswordExpires': undefined},
+						////$push: {sku: req.body.sku},
+						options = {upsert: true};
+
+
 		               ////use user will not work
 		               User.update(
-
 		               	  conditions,update,options,
-		               	  function(err,raw){
+		               	  (err,raw)=>{
 		               	  	console.log('no error in the above of if err');
 		               	  	if(err){
 		               	  		console.log(err.stack,raw);
-
 		               	  		req.flash('error', 'There was a error processing your request!');
 		               	  		res.redirect(303,'/user/reset/'+ req.params.token);
 		               	  	}
-		 
+							req.logIn(user, err=>{
 
-			               	  req.logIn(user,function(err){
-
-			               	  	  mailService.send(user.local.email,'Your password has been changed!', 
-			                          'Hello,\n\n' + 'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
-			               	  	  	);
-			               	  });
+								mailService.send(user.local.email,'Your password has been changed!', 
+									'Hello,\n\n' + 'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
+								);
+							});
 
 		                    req.flash('success', 'successfully Updated your password!');
 		                    res.redirect(303, '/user/profile');
 		               	  }
-		               	 );
+		             );					  
+				  }).
+				  catch(function(err){
+						console.log('error', err);
+						flash('error',err);
+						res.redirect('back');
+				  });
+
+		             
 
 		               // or we can use the following is ok too 
 		               //user.save(function(err){
@@ -183,10 +177,10 @@ module.exports = {
 		               // });
 		               // req.flash('success', 'Success! Your password has been changed.');
 		               // res.redirect('/user/profile');
-		       	  });
+		       	 
 		},
 
-		postForgotPassword: function(User){
+		postForgotPassword: User=>{
 		       return function(req,res){
 					//var token;
 					//console.log();
@@ -200,7 +194,7 @@ module.exports = {
 
 
 					 			console.log(req.body.email);
-					            User.findOne({ 'local.email': req.body.email }, function(err, user) {
+					            User.findOne({ 'local.email': req.body.email }, (err, user)=> {
 					                        if(err){console.log(err);}
 									        if (!user) {
 									          req.flash('error', 'No account with that email address exists.');
@@ -221,7 +215,7 @@ module.exports = {
 												          '<p>If you did not request this, please ignore this email and your password will remain unchanged.</p>\n'
 
 					                        	);
-									        user.save(function(err) {
+									        user.save(err=> {
 					                            if (err){throw err;}
 					                            req.flash('info', 'An e-mail has been sent to ' + user.local.email + ' with further instructions.!');
 					                            res.redirect('/user/login');
@@ -239,12 +233,12 @@ module.exports = {
 		      };
 		},
 
-		putUpdateUser: function(User){
+		putUpdateUser: User=>{
 		       return function(req,res){
 		            let   locals    = req.user.local, 
 					      username = locals.username,
 					      email    = locals.email;
-							User.findOne({ 'local.email': email }, function(err, user) {
+							User.findOne({ 'local.email': email }, (err, user)=> {
 										if(err){console.log(err);return;}
 										if (!user) {
 											req.flash('error', 'Your logined user\'s email seems not found in our system! Please logout and login again!');
@@ -257,7 +251,7 @@ module.exports = {
 																'Your new username:'+ req.body.username +'/n'+
 																'Your new email:' + req.body.email
 												);
-												user.save(function(err) {
+												user.save(err=> {
 													if (err){throw err;}
 													req.flash('success', 'You have successfully update your information!');
 													res.redirect('/user/profile');
@@ -275,9 +269,9 @@ module.exports = {
 		},
 
 
-		logout: function(req,res){
+		logout: (req,res)=>{
 					//req.logout();
-					req.session.destroy(function(err){
+					req.session.destroy(err=>{
 						  if(err) {
 						    console.log(err);
 						  } else {
@@ -314,19 +308,19 @@ module.exports = {
 
 
 		 //    });
-		postSignup: function(passport){
+		postSignup: passport=>{
 
 		     return function(req, res, next) {
-				  passport.authenticate('local-signup', function(err, user, info) {
+				  passport.authenticate('local-signup', (err, user, info)=> {
 				    if (err) { return next(err); }else{
 								if (!user) {
 									//req.flash('error', 'No such user exists'); 
 									return res.redirect('/user/signup'); 
 								}else{
-										req.logIn(user, function(err) {
+										req.logIn(user, err=> {
 												if (err) { return next(err); }
 												res.render('email/signupMessage',
-														{layout:null, user:user}, function(err,html){
+														{layout:null, user:user}, (err,html)=>{
 															if(err){console.log('err in email template', err);}
 															try{
 																mailService.send(user.local.email,'Thanks for your signup!',html);
@@ -338,7 +332,7 @@ module.exports = {
 
 												);
 												req.flash('success','You login successfully and welcome to your dashboard!');
-												return res.redirect('/user/profile');
+												return res.redirect('/user/profile/'+ user._id);
 
 										});
 								}
@@ -354,7 +348,7 @@ module.exports = {
 
 		postLogin: function(passport){
 		    return function(req,res,next){
-		        	passport.authenticate('local-login', function(err, user, info){
+		        	passport.authenticate('local-login', (err, user, info)=>{
 						    if (err) { return next(err); }
 						    if (!user) { 
 						    	req.flash('error','Something wrong with the Password or email!')
@@ -364,7 +358,7 @@ module.exports = {
 						    	if (err) { return next(err); }
 						    	
 						    	req.flash('success','Login successfully!')
-						    	return res.redirect('/user/profile');
+						    	return res.redirect('/user/profile/'+user._id);
 		 
 						    });        		
 				    })(req, res, next);
@@ -372,7 +366,7 @@ module.exports = {
 		 },
 
 
-		postFileUpload: function(app){
+		postFileUpload: app=>{
 		       return function(req,res){
                     let dataDir;
 		            if(app.get('env')=== 'development'){
@@ -424,7 +418,7 @@ module.exports = {
 				        
 				        const form = new formidable.IncomingForm();
 
-				        form.parse(req,function(err,fields,file){
+				        form.parse(req,(err,fields,file)=>{
 
 				            if(err){
 									req.flash('error','form parse error:' + err);
@@ -443,8 +437,8 @@ module.exports = {
 									const fullPath = thedir + photoName;
 
 									//checkDir need to be passed to have a callback so that the thedir is generated before the rename function being called
-									utils.checkDir(thedir,function(){
-										fs.rename(photo.path, fullPath, function(err){
+									utils.checkDir(thedir,()=>{
+										fs.rename(photo.path, fullPath, err=>{
 											if (err) {console.log(err); return; }
 											console.log('The file has been re-named to: ' + fullPath);
 										});										
@@ -460,10 +454,10 @@ module.exports = {
 											
 											const user = req.user;
 											user.local.logo = photoName;
-											user.save(function(err){
+											user.save(err=>{
 												if(err){throw err}
 												req.flash('success','Upload your logo successfully');
-												res.redirect('/user/profile');
+												res.redirect('/user/profile/'+ user._id);
 											});
 
 										}

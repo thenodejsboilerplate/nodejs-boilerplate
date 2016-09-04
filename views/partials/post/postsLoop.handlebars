@@ -1,0 +1,28 @@
+                        {{#if posts}}
+                            {{#each posts}}
+                                <li>
+                                
+                                    <p>{{ title }}</p>
+                                    <p class="info" style="font-size:0.5em;line-height:0.1em;">
+                                    Author：<a href="/user/profile/{{user_id}}">{{ author }}</a> | 
+                                    Time：{{ created_at }} |
+                                    Tags:
+                                    {{#each tags}}
+                                    <span style="display:inline-block;border:1px solid grey;line-height:1em"><a href="/post/tag/{{_id}}">{{name}}</a></span>
+                                    {{/each}}                                    
+
+                                     {{#if ../isMyPosts}}
+                                    | 
+                                        <span><a class="edit" href="/post/edit/{{ _id }}">编辑</a></span>
+                                        <span><a class="edit" href="/post/delete/{{ _id }}">删除</a></span>
+                                     {{/if}}
+                                    </p>
+                              
+                                    <p><a href="/post/show/{{title}}">{{ intro }}</a></p>
+                                </li>
+                            {{/each}}
+
+                            {{> post/paging }}
+                        {{/if}}
+
+

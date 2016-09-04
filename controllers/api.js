@@ -1,6 +1,6 @@
 "use strict";
 module.exports = {
-		getAll: function(req,content,cb){
+		getAll: (req,content,cb)=>{
 				Attraction.find({approved:true}, function(err,attractions){
 					if(err){
 						return cb({error: 'Internal error'});
@@ -17,7 +17,7 @@ module.exports = {
 				});
 	    },
 
-		putOne:  function(req,content,cb){
+		putOne:  (req,content,cb)=>{
 					let a = new Attraction({
 						name:req.body.name,
 						description:req.body.description,
@@ -37,7 +37,7 @@ module.exports = {
 					});
 	   },
 
-	   getOne: function(req,content,cb){
+	   getOne: (req,content,cb)=>{
 					Attraction.findById(req.params.id, function(err,a){
 						if(err){cb({err:'Unable to retrieve attraction.'})}
 						cb(null,{

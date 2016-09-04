@@ -1,9 +1,29 @@
-                <h2>Welcome to the User Profile</h2>
-                <h3><img src="/upload/logo/{{user._id}}/{{user.local.logo}}"></h3>
                 
-                    <p>
-                        <strong>id</strong>: {{ user.id }}<br>
-                        <strong>username</strong>: {{ user.local.username }}<br>
-                        <strong>email</strong>: {{ user.local.email }}<br>
-                        <strong>Created_at</strong>: {{ created_at }}<br>
-                    </p>
+
+                         {{#if isMyPosts}}
+                        <h2>Welcome to Your Profile Page</h2>
+                        {{else}}
+                        <h2>Welcome to {{postUser.username}}'s Profile Page</h2>
+                        {{/if}}
+                        
+                        <h3><img src="/upload/logo/{{postUser._id}}/{{postUser.logo}}" style="display:inlne-block;width:2em;height:2em;"></h3>
+                        
+                            <p>
+                                <strong>id</strong>: {{ postUser._id }}<br>
+                                <strong>username</strong>: {{ postUser.username }}<br>
+                                <strong>email</strong>: {{ postUser.email }}<br>
+                                <strong>Created_at</strong>: {{ postUser.created_at }}<br>
+                            </p>  
+
+                            <h3> {{postUser.username}}'s Posts</h3> 
+                            {{> post/postsLoop}}
+
+
+
+
+
+
+
+
+         
+                    

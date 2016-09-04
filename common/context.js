@@ -2,7 +2,7 @@
 const config = require('../config/config');
 module.exports = {
 
-	env1: function(app,mongoose){
+	env1: (app,mongoose)=>{
 			// set up our express application
 		    "use strict";
 		    //opts is optional but we wanna use keepAlive to prevent the app running from some bd connecting errors 

@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
 			// route middleware to make sure a user is logged in
-		isLoggedIn: function (req, res, next) {
+		isLoggedIn: (req, res, next)=> {
 
 		    // if user is authenticated in the session, carry on 
 		    if (req.isAuthenticated()){ 
@@ -14,7 +14,7 @@ module.exports = {
 
 		},
 
-		notLoggedIn: function (req, res, next) {
+		notLoggedIn: (req, res, next)=> {
 
 		    // if user is authenticated in the session, carry on 
 		    if (req.isAuthenticated()){
@@ -28,7 +28,7 @@ module.exports = {
 
 		},
 		//roles is a string with , ,eg:"customer,seller"
-		allow: function (roles){
+		allow: (roles)=> {
 			return function(req,res,next){
 					if(req.user){
 						let user      = req.user;
