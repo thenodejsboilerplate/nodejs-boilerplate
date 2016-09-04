@@ -1,0 +1,142 @@
+         fieldset{border:0;}
+		fieldset ul.formList{
+
+                
+			background-color:$white;
+            width:100%;
+
+			li{
+				border-bottom:1px solid #e3e3e3;
+				&:hover{border-bottom:1px solid #00a89e;}
+
+				position:relative;
+                width:100%;
+                line-height: 3em;
+                overflow: hidden;
+                
+				&>span{
+					width:25%;//70px/16px
+					display:inline-block;
+
+					color:darken(#e3e3e3,16%);
+					
+                    font-weight: bold;
+					
+					font-size: 1em;
+
+                         height:100%;
+                         
+                         padding: 0.5em 0!important;
+                         @include mq(tabletUp){
+                            padding: 0.5em 1em!important;
+                            display:block;
+                            border-bottom:1px dashed #e3e3e3;
+                            
+                                
+                            
+                             width:100%;
+                         }
+
+
+                         line-height: 2em;
+
+
+					
+					//box-sizing:border-box;
+					
+
+
+				}
+			  &>.formItem{
+
+                     @include mq(tabletUp){                       
+                            display:block;
+                            width:100%;
+
+                     }                
+					width:70%;
+					display: inline-block;
+					
+					color:#999;
+			        
+
+			    //border:1px solid red;
+
+                    font-size: 1em;
+                    
+                   word-wrap: break-word;
+                   word-break:break-all;
+
+                  
+                     
+
+                     input{
+
+                     @include mq(tabletUp){                   
+                                padding-left:5%!important;  
+                                float:none;
+                                width:95%;
+                     } 
+
+                        word-wrap: break-word;
+                        word-break:break-all;
+                     	//border:1px solid green;
+                         
+                         width: 100%;
+                         //height: 16px;
+                         height:100%;
+                         font-size:1em!important;
+
+
+                         padding: 0.5em 0!important;
+                         line-height: 2em;
+
+
+
+                         border: 0;
+                         color: #000;
+                        
+                         background: transparent;
+                     }       
+
+                     pre{
+                        word-wrap: break-word;
+                        word-break:break-all;
+                     }              
+
+
+					 .error{display:none;}
+				}//edn of formitem
+
+			}
+
+		}//end of formList
+
+
+      input[type="submit"]{
+
+    	margin-top:2em;
+    	width:100%;
+    	background-color:#00a89e;
+    	border-radius:4px;
+    	padding:0.6em 0;
+    	color:$white;
+    	font-weight:bold;
+    	cursor: pointer;
+
+      }
+
+
+     textarea{
+         width:100%!important;
+         display:block;
+         padding:1em;
+
+         border:0;
+         border-top:1px none #e3e3e3; 
+
+        
+         height:100%;
+     }         
+
+  

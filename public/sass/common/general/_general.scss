@@ -1,0 +1,157 @@
+//mediaquery class
+
+*{ margin:0; padding:0;font-size:15px; text-decoration:none;
+   -webkit-user-drag: none;
+   -webkit-tap-highlight-color:rgba(255,255,255,0);
+ }
+ //a,img,button,input,textarea,div{-webkit-tap-highlight-color:rgba(255,255,255,0);}
+ body{ min-height:100%;}
+ 
+  /*****set css input placeholder: color.
+        Firefox's placeholder appears to be defaulting with a reduced opacity, so needs to use opacity: 1 here.
+  *******/
+//two ways to do this ,first without using sass,as follows:
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    lighten(#e3e3e3,3%);
+
+    font-size: 1em;
+
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    lighten(#e3e3e3,3%);
+   opacity:  1;
+
+   font-size: 1em;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    lighten(#e3e3e3,3%);
+   opacity:  1;
+
+   font-size: 1em;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    lighten(#e3e3e3,3%);
+
+   font-size: 1em;
+}
+//second using sass,as follows(we define the placholder in the mixin file)
+/*******
+[placeholder]{
+	@include placeholder(lighten(#e3e3e3,3%),1em,1)
+}
+*****/
+
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill{
+    background-color: $white;
+    // background-image: none;
+    color: rgb(0, 0, 0);
+}
+
+a{text-decoration:none;}
+
+a,input[type="button"],input[type="submit"],input[type="search"]{
+
+	-ms-touch-action:none;
+	touch-action:none;
+	//the following two attribute is very important in iphone in case the padding bug and the radius bug //Some browsers use additional default CSS for some input types (email, search). These might affect the rendering in unexpected ways. Use the properties -webkit-appearance and -moz-appearance to change that.
+
+    -moz-appearance: none;
+    -webkit-appearance:none;
+    appearance:none;
+
+    @include user-select-none;   
+    @include radius(0px);
+    border:0;  
+
+}
+
+pre{
+  
+  padding:1em 1em;
+  margin-bottom:1;
+  line-height: 1.5em;
+   overflow: auto;
+    font-size: 13px;
+    padding: 5px;
+    width: auto;
+
+   max-height: 600px;
+    background: #eee!important;
+    margin-bottom: 1em;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;    
+    //white-space: pre; 
+    color:#3a3a3a!important;
+
+}
+code{
+  //background-color: transparent;
+  border: 1px solid transparent;
+  background-color: #eee!important;
+   color:#3a3a3a!important;
+}
+
+.hide{
+  display:none;
+}
+.success{
+    color:#43AC6A;
+}
+.alert{
+  color:#f04124;
+}
+
+
+ul li{list-style:none;}  
+input{
+   
+   &[type="button"]:hover,input[type="submit"]:hover{cursor:pointer;}
+   &[type="submit"]{border:0px solid transparent;}
+   &[type="button"]{border:0px solid transparent;}
+}
+textarea,input,button{
+    display:block;
+
+     &:focus{
+      -moz-outline-style:none;
+      outline-style:none;
+
+    }
+}
+textarea,input{
+  // resize:none;
+  word-break: break-all;
+  word-wrap:break-word;
+  white-space: break-word;
+// prevent text from wrapping normally in CSS
+// you use #whatever { white-space: nowrap; }. But for whatever reason, that doesn't work with textareas. If you want to be able to type into textareas and would rather lines do not break until you press return/enter (a horizontal scrollbar is triggered instead), you'll have to use the wrap="off" attribute.
+// <textarea wrap="off" cols="30" rows="5"></textarea>
+}
+
+
+
+.arrow_up{
+	width: 0; 
+	height: 0; 
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	border-bottom: 20px solid lighten($black,8%);
+    position: absolute;
+	z-index:56;
+
+	top:0;
+	left:50%;
+	transform: translate(-50%, -100%);			
+  }
+	
+.arrow_down {
+	width: 0; 
+	height: 0; 
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	border-top: 20px solid $white;
+    position: absolute;
+	
+	top:0;
+	left:50%;
+	transform: translate(-50%, 0);
+  }

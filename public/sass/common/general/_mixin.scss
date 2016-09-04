@@ -1,0 +1,378 @@
+@mixin vertical-aligns{
+  //way one(using peso element):
+    /* 
+    added to the parent to vertically align the elements inside(inside element needs to be put: vertical-align:middle ) 
+    */
+       &:before{
+          content:"";
+          display:inline-block;
+          height:100%;
+          vertical-align:middle;
+          margin-right:-0.25em;/**adjusts for spacing**/
+    	 }
+
+  //way two(using table-cell)
+    //it's for parent and need to give its child :  vertical-align: middle
+         // display: table-cell;
+         // vertical-align: middle
+   
+   //way three(using flex)
+
+        //.flex-container {
+        //   /* You must include this prop */
+        //   display: flex;
+        //   /* justify-content aligns the items horizontally */
+        //   justify-content: center;
+        //   /* align-items aligns the items vertically */
+        //   align-items: center;
+          
+        //   width: 800px;
+        //   height: 400px;
+          
+        //   margin: 50px auto;
+          
+        //   background: rgba(0, 0, 0, 0.064);
+          
+        //   border: 1px dashed black;
+        // }
+
+        // .item {
+        //   display: inline-block;
+          
+        //   width: 200px;
+        //   height: 100px;
+          
+        //   margin-right: 40px;
+          
+        //   background: #4ae;
+        // }
+
+        // .item:last-child {
+        //   margin: 0;
+        // }
+
+
+
+}
+
+@mixin radius($radius){
+  /* Safari 3-4, iOS 1-3.2, Android 1.6- */
+  -webkit-border-radius: $radius; 
+
+  /* Firefox 1-3.6 */
+  -moz-border-radius: $radius; 
+  
+  /* Opera 10.5, IE 9, Safari 5, Chrome, Firefox 4, iOS 4, Android 2.1+ */
+  border-radius: $radius;   
+}
+
+/****loop to output the images in the .trait-* class in the  index.html file; the below code needs fixing!!!!!!!
+@mixin list-trait(){
+  @each $trait in latest,personal,social,tech{
+    @content;
+  }
+}
+******/
+
+@mixin ellipsis($myWidth){
+      width:$myWidth;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+}
+// @mixin flex{
+//   display: -webkit-box;
+//   display: -moz-box;
+//   display: -ms-flexbox;
+//   display: -webkit-flex;
+//   display: flex;
+// }
+
+
+
+
+//flex prefix suggested by https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+@mixin flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+@mixin flex($values: '') {
+  @if $values != ''{
+    -webkit-box-flex: $values;
+    -moz-box-flex:  $values;
+    -webkit-flex:  $values;
+    -ms-flex:  $values;
+    flex:  $values;
+  }
+  @else if $values == ''{
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;    
+  }
+
+}
+
+@mixin order($val) {
+  -webkit-box-ordinal-group: $val;  
+  -moz-box-ordinal-group: $val;     
+  -ms-flex-order: $val;     
+  -webkit-order: $val;  
+  order: $val;
+}
+//how to use the above flex prefix
+// .wrapper {
+//   @include flexbox();
+// }
+
+// .item {
+//   @include flex(1 200px);
+
+     //This is the shorthand for flex-grow, flex-shrink and flex-basis combined. The second and third parameters (flex-shrink and flex-basis) are optional. Default is 0 1 auto.
+     //flex-grow defines the ability for a flex item to grow if necessary. It accepts a unitless value that serves as a proportion. It dictates what amount of the available space inside the flex container the item should take up.
+     //If all items have flex-grow set to 1, the remaining space in the container will be distributed equally to all children. If one of the children a value of 2, the remaining space would take up twice as much space as the others (or it will try to, at least).
+
+//   @include order(2);
+// }
+
+
+
+
+
+@mixin break-word(){
+    word-break: break-all;
+  word-wrap:break-word;
+  //white-space: pre-wrap;
+}
+
+
+@mixin placeholder($color:lighten(#e3e3e3,3%), $font-size: 1em){
+  /*****set css input placeholder: color.
+        Firefox's placeholder appears to be defaulting with a reduced opacity, so needs to use opacity: 1 here.
+  *******/
+//-----two ways to do this ,first without using sass,as follows:
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    $color;
+    font-size: $font-size;
+  
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    $color;
+   opacity:  1;
+
+   font-size: $font-size;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    $color;
+   opacity:  1;
+
+   font-size: $font-size;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    $color;
+
+   font-size: $font-size;
+}
+//-----second using sass,as follows(we define the placholder in the mixin file)
+/*******
+[placeholder]{
+  @include placeholder(lighten(#e3e3e3,3%),1em,1)
+}
+*****/
+}
+
+
+@mixin user-select-none {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//media query
+
+//how to use @include mq(s){}
+
+// $tablet:em-calc(810);
+// $desktop:em-calc(1025);
+// @mixin mq($media) {
+//   @if $media == tabletUp {
+//     @media only screen and (min-width: $tablet){ @content; }
+//   }
+//   @else if $media == desktop {
+//     @media only screen and (min-width: $desktop){ @content; }
+//   }
+  
+// }
+
+/**** 
+   @media #{$small-only}{
+          margin-left: auto;
+            margin-right: auto;
+            float: none;
+   }
+   
+@mixin mq($media) {
+  @if $media == handhelds {
+    @media only screen and (max-width: 479px) { @content; }
+  }
+  @else if $media == wide-handhelds {
+    @media only screen and (min-width: 480px) and (max-width: 767px) { @content; }
+  }
+  @else if $media == tablets {
+    @media only screen and (min-width: 768px) and (max-width: 959px) { @content; }
+  }
+}
+
+#sidebar {
+  float: left;
+  width: 300px;
+  @include respond-to(handhelds) { float: none; }
+  @include respond-to(wide-handhelds) { float: none; }
+  @include respond-to(tablets) { width: 240px; }
+}
+*****/
+  
+$s:380px;
+$ls:492px;
+$tablet:584px;
+$wide-tablet:961px;
+$desktop:1025px;
+$wide-desktop:1500px;
+// $s:rem(380px);
+// $ls:rem(492px);
+// $tablet:rem(584px);
+// $wide-tablet:rem(961px);
+// $desktop:rem(1025px);
+// $wide-desktop:rem(1500px);
+// $tabletUp: rem(900px);
+
+@mixin mq($media) {
+  @if $media == s {
+    @media only screen and (min-width: $s) and (max-width: $ls - 1) { @content; }
+  }
+  @else if $media == ls {
+    @media only screen and (min-width: $ls) and (max-width: $tablet - 1) { @content; }
+  }
+  @else if $media == tablet {
+    @media only screen and (min-width: $tablet) and (max-width: $wide-tablet - 1) { @content; }
+  }
+  @else if $media == wide-tablet {
+    @media only screen and (min-width: $wide-tablet) and (max-width: $desktop - 1) { @content; }
+  }  
+  @else if $media == desktop {
+    @media only screen and (min-width: $desktop) and (max-width: $wide-desktop - 1) { @content; }
+  }
+  @else if $media == wide-desktop {
+    @media only screen and (min-width: $wide-desktop) { @content; }
+  }
+
+  @else if $media == tabletUp {
+    @media only screen and (min-width: $wide-tablet) and (max-width: $wide-desktop - 1) { @content; }
+  }@else if $media == tabletDown {
+    @media only screen and (min-width: 0) and (max-width: $wide-tablet - 1) { @content; }
+  }@else if $media == phone {
+    @media only screen and (min-width: 0) and (max-width: $ls - 1) { @content; }
+  }@else if $media == mobileUp {
+    @media only screen and (min-width: $ls) and (max-width: $wide-desktop - 1) { @content; }
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//how to use a function example 
+//create placeholder mixin
+// // about opacity and usage: set css input placeholder: color. Firefox's placeholder appears to be defaulting with a reduced opacity, so needs to use opacity: 1 here.
+
+
+// // use placeholder mixin (size and opacity param is optional)
+// // [placeholder] {
+// //   @include placeholder(red, 10px);
+// // }
+// @mixin placeholder($color, $size:"", $opacity:"") {
+
+//   &::-webkit-input-placeholder {
+//     color: $color;
+//     @if $size != "" {
+//       font-size: $size;
+//     }
+
+//   }
+
+//   &:-moz-placeholder {
+//     color: $color;
+//     @if $size != "" {
+//       font-size: $size;
+//     }
+//     @if $opacity != ""{
+//       opacity:$opacity;
+//     }
+//   }
+
+//   &::-moz-placeholder {
+//     color: $color;
+//     @if $size != "" {
+//       font-size: $size;
+//     }
+//     @if $opacity != ""{
+//       opacity:$opacity;
+//     }    
+//   }
+
+//   &:-ms-input-placeholder {
+//     color: $color;
+//     @if $size != "" {
+//       font-size: $size;
+//     }
+   
+//   }
+//   &:input-placeholder {
+//     color: $color;
+//     @if $size != "" {
+//       font-size: $size;
+//     }
+   
+//   }  
+
+
+// }

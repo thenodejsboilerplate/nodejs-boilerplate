@@ -1,0 +1,17 @@
+/***@keyframes***/
+@keyframes buttonMove{
+   from{
+      transform:rotate(0deg);
+      /****animation-timing-function:cubic-bezier(1,.03,1,.115)***/
+
+   }
+   50%{
+      transform:rotate(180deg);
+   }
+   to{
+      transform:rotate(0deg);
+   }
+
+
+
+}

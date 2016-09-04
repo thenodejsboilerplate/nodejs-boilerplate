@@ -1,0 +1,51 @@
+$browser-context:15;//default 
+
+@function static($name){
+  @return 'url("http://localhost")' + $name;
+}
+
+@function em($pixels, $context: $browser-context) {
+  @return ($pixels/$context)+em;
+}
+
+/*
+the function is for turn px to rem
+usage:
+$length : 42em;
+$int    : strip-unit($length); // 42
+
+
+$context: $browser-context: A way to improve the rem function further would be to include a default value. That way specifying the rem base value will be optional.
+*/
+@function rem($pxsize,$context: $browser-context) {
+    @return ($pxsize/$context)+rem;
+}
+
+/*
+to get a number without its unit, you need to divide it by 1 of the same unit. To get 42 from 42em, you need to divide 42em by 1em.
+*/
+@function strip-unit($value) {
+	@return $value / ($value * 0 + 1);
+}
+
+/*
+if() is a function mimicing the well known one-line conditional statement: var = condition ? true : false. The first parameter of the if() function is the condition, the second one is the result if condition is true, and the first one is the value if condition is false.
+
+Now back to our clamp function, here is what is going on:
+
+If the value is greater than the maximum value, it returns $max
+If the value is lesser than or equals to the maximum value and
+if the value is lesser than the minimum value, it returns $min
+if the value is greater than or equals to the minimum value, it returns $value
+
+that could be useful when you want to be sure the number you pass to a function is between two values, like a percentage for color functions.
+
+$pc: percentage(clamp($value, 0, 100));
+$darkColor: darken($color, $pc);
+
+*/
+@function clamp($value, $min, $max) {
+  @return if($value > $max, $max, if($value < $min, $min, $value));
+}
+
+
