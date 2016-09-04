@@ -12,6 +12,21 @@ Prerequisite:
 2. Mongodb
 3. Ngnix Preferred
 
+Multi-user Forum Functionality:
+------------
+1. Upload images
+2. Post an article
+3. Modify an article
+4. Delete an article
+5. Leave a comment
+6. More...
+
+Javascript Framework-jBear:
+---------------------------
+1. convinent global variables
+2. easy es5 and es6 shim
+3. small tool functions
+
 
 QATest with:
 ------------

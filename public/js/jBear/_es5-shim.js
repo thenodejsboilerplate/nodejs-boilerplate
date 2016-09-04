@@ -22,7 +22,6 @@ Usage:
     ******/
         if(!document.createElement('div').insertAdjacentHTML){
             HTMLElement.prototype.insertAdjacentHTML = function(position,  htmlString){
-
                    //if you pass a DocumentFragment to appendChild(), insertBefore or replaceChild(), it's the children of the fragment that are inserted into the document, not the fragment itself;           so first define a utility method that takes a string of HTML and returns a DocumentFragment containing the parsed representation of that HTML
                    var this_element = this;
                    function fragment(htmlString){

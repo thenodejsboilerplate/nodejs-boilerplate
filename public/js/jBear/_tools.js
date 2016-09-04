@@ -168,10 +168,7 @@ var greatApp = jBear || {};
 
         ele = ele.offsetParent;
       }
-
       return {x:x, y:y};
-
-
     },
 
 
