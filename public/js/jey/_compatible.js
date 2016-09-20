@@ -6,10 +6,10 @@
 // Usage:     
 
 
-var greatApp = jBear || {};
+var jey = jey || {};
 
 (function(){
-  jBear.prototype = {
+  jey.prototype = {
 
       /**********************************
             browser support addEventListener

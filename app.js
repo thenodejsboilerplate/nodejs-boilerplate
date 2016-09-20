@@ -92,8 +92,6 @@ function startServer(){
     //ensure you tell express that you've used a proxy and it should be trusted if yuo set a proxy server like ngnix so req.ip, req.protocol,req.secure can reflect the connectiong details of the client and the proxy server rather than between your client and your app. Besides, req.ips will be an array, wihch is composed of IP of original client and IP or names of all the middle proxy
     app.enable('trust proxy');
  
-
-
     //prevent CSRF attack by ensuring requests legally from your site
     // app.use(require('csurf')());
     // app.use(function(req,res,next){
@@ -101,10 +99,7 @@ function startServer(){
     // 	next();
     // });
 	const routes = require('./routes')(app,passport,User);
-
     const autoView = require('./common/autoView')(app);
-
-
 
 	//customize 404 page using middleware
 	app.use(function(req,res,next){

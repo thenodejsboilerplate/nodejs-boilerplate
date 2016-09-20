@@ -6,7 +6,8 @@ const fortuneLib = require('../lib/fortune.js'),
       userProxy = require('../db_proxy/user');
 
 module.exports = {
-         home: (req,res)=>{
+
+         home(req,res){
             //console.log(mailService.sendToGroup(['frank25184@icloud.com','ddd@dd.com','djfd@sdf.com'],'subject','this is body'));
             
             //判断是否是第一页，并把请求的页数转换成 number 类型
@@ -47,7 +48,7 @@ module.exports = {
 
         },
 
-        about: (req,res)=>{
+        about(req,res){
                     res.render('home/about',{
 
                         pageTestScript: '/js/page-test/tests-about.js',//know which test file to be used in this route

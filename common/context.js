@@ -28,6 +28,8 @@ module.exports = {
 
 		          /**mongoose part**/
 				  mongoose.connect(config.db.mongo.development.url);
+				  //delete the caches of all the loaded modules,which is an object with key and values
+				  delete require.cache;
 
 				  break;
 				case 'production':

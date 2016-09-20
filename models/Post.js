@@ -29,6 +29,7 @@ var postSchema = new Schema({
           intro: {type: String, required: true, min: 20},
           //comments: [{ body: String, date: Date }],
           pv: {type: Number, default: 0},
+          like: {type: Number, default: 0},
           hidden: {type: Boolean, default: 'false'},
           great:{type: Boolean, default: 'false'},
           meta: {

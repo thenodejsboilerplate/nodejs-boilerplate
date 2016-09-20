@@ -3,7 +3,8 @@ const User    = require('../models/User'),
       Post = require('../models/Post'),
       Comment = require('../models/Comment'),
       userProxy = require('../db_proxy/user'),
-      moment = require('moment');
+      moment = require('moment'),
+      util = require('../lib/utility');
 //var utility = require('utility');                              
 
 
@@ -77,7 +78,7 @@ module.exports = {
                     });
                })
                .catch(function(err){
-                  console.log(err);
+                  console.log(err.message);
                   req.flash('error','Error finding the user!');
                   res.redirect('back');
                });
@@ -97,60 +98,105 @@ module.exports = {
                 if(req.user){
                     loginedUser = req.user.processUser(req.user);
                 }
+               let findPost =  function (theTitle){
+                    return new Promise(function(resolve,reject){
+                        Post.findOne({'title': theTitle},function(err,post){
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    //setting view times
+                                    var conditions = { 'title': title },
+                                        update = { $inc: { 'pv': 1 }};//increment
+                                    Post.findOneAndUpdate(conditions, update, function(err,post){
+                                        if(err){
+                                            console.log(`there is error when update the pv: ${err}`);
+                                            return;
+                                        }
+                                    });   
+                                    resolve(post);                                 
+                            
+                              }                            
+                        });
+                    });
+                }
 
-                const promis = new Promise(function(resolve,reject){
-                    Post.findOne({'title': title}, (err,post)=>{
-                            if(err){
-                                    console.log('something wrong...');
-                                    console.log(`we cannot find post title,error: ${err}`);
-                                    reject(`we cannot find post title,error: ${err}`);						
-                            }else if(post){
+                util.run(function*() {
+                    let post = yield findPost(title);
+                    let newPost = post.processPost(post);
+                    post.user(post.user_id,theuser=>{
+                        post.comments(post._id, function(comments){
+                                res.render(path, {
+                                        user: req.user ? req.user.processUser(req.user) : req.user,
+                                        postUser: req.user ? (req.user._id == post.user_id ? loginedUser : theuser) : theuser,
+                                        post: newPost,
+                                        comments: comments,
+                                        //user_created_at: user_created_at,
+                                        messages: {
+                                            error: req.flash('error'),
+                                            success: req.flash('success'),
+                                            info: req.flash('info'),
+                                        }, // get the user out of session and pass to template
+                                });
+                        });
+
+                    });
+                    console.log("Done");
+                });      
+
+
+            //     const promis = new Promise(function(resolve,reject){
+            //         Post.findOne({'title': title}, (err,post)=>{
+            //                 if(err){
+            //                         console.log('something wrong...');
+            //                         console.log(`we cannot find post title,error: ${err}`);
+            //                         reject(`we cannot find post title,error: ${err}`);						
+            //                 }else if(post){
                             
                                 
-                                //setting view times
-                                var conditions = { 'title': title },
-                                    update = { $inc: { 'pv': 1 }};//increment
-                                Post.findOneAndUpdate(conditions, update, function(err,post){
-                                    if(err){
-                                        console.log(`there is error when update the pv: ${err}`);
-                                        return;
-                                    }
-                                });
+            //                     //setting view times
+            //                     var conditions = { 'title': title },
+            //                         update = { $inc: { 'pv': 1 }};//increment
+            //                     Post.findOneAndUpdate(conditions, update, function(err,post){
+            //                         if(err){
+            //                             console.log(`there is error when update the pv: ${err}`);
+            //                             return;
+            //                         }
+            //                     });
 
-                                resolve(post);
+            //                     resolve(post);
 
-                        }else{
-                                req.flash('error',`post is undefined or no post`);
-                                res.redirect('back');	         
-                        }
+            //             }else{
+            //                     req.flash('error',`post is undefined or no post`);
+            //                     res.redirect('back');	         
+            //             }
 
-                    }); 
-            }); 
-            promis.then(function(post){
-                let newPost = post.processPost(post);
-                post.user(post.user_id,theuser=>{
-                    post.comments(post._id, function(comments){
-                            res.render(path, {
-                                    user: req.user ? req.user.processUser(req.user) : req.user,
-                                    postUser: req.user ? (req.user._id == post.user_id ? loginedUser : theuser) : theuser,
-                                    post: newPost,
-                                    comments: comments,
-                                    //user_created_at: user_created_at,
-                                    messages: {
-                                        error: req.flash('error'),
-                                        success: req.flash('success'),
-                                        info: req.flash('info'),
-                                    }, // get the user out of session and pass to template
-                            });
-                    });
+            //         }); 
+            // }); 
+            // promis.then(function(post){
+            //     let newPost = post.processPost(post);
+            //     post.user(post.user_id,theuser=>{
+            //         post.comments(post._id, function(comments){
+            //                 res.render(path, {
+            //                         user: req.user ? req.user.processUser(req.user) : req.user,
+            //                         postUser: req.user ? (req.user._id == post.user_id ? loginedUser : theuser) : theuser,
+            //                         post: newPost,
+            //                         comments: comments,
+            //                         //user_created_at: user_created_at,
+            //                         messages: {
+            //                             error: req.flash('error'),
+            //                             success: req.flash('success'),
+            //                             info: req.flash('info'),
+            //                         }, // get the user out of session and pass to template
+            //                 });
+            //         });
 
-                });
-            })
-            .catch(function(err){
-                console.log(err);
-                req.flash('error',`there is an error in find post for ${title}`);
-                res.redirect('back');	
-            });
+            //     });
+            // })
+            // .catch(function(err){
+            //     console.log(err);
+            //     req.flash('error',`there is an error in find post for ${title}`);
+            //     res.redirect('back');	
+            // });
 
 
         }

@@ -19,7 +19,9 @@ Multi-user Forum Functionality:
 3. Modify an article
 4. Delete an article
 5. Leave a comment
-6. More...
+6. Tag pags
+7. Search Engine 
+8. More...
 
 Javascript Framework-jBear:
 ---------------------------
