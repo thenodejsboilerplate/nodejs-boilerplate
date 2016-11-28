@@ -172,6 +172,7 @@ fs.writeFileSync(file, data[, options])#
 
 /**
  * fs.open(path, flags[, mode], callback)
+ * callback (err,fd){}
  *  path flags mode 与readFile中filename,options参数中的flags 和mode属性值同
  * mode sets the file mode (permission and sticky bits), but only if the file was created. It defaults to 0666, readable and writable.
 

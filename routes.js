@@ -6,7 +6,8 @@ const user = require('./routes/user'),
 	  login3 = require('./routes/login3'),
 	  index = require('./routes/index'),
 	  api = require('./routes/api'),
-	  post = require('./routes/post');
+	  post = require('./routes/post'),
+	  group = require('./routes/group');
 
 module.exports   = function(app, passport,User) {
 	 app.use('/',index);  
@@ -16,6 +17,7 @@ module.exports   = function(app, passport,User) {
 	 app.use('/auth',login3);
      app.use('/post', post);
 	 app.use('/test',test);
+	 app.use('/group',group);
 
 		//to get form data using req.body
 		/*****form part end********/

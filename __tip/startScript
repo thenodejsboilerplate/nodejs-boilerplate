@@ -1,0 +1,37 @@
+#! /bin/sh
+
+#trver - startup script for node app(make the server to start automatically when computer start)
+#the script should be located in /etc/init.d/file(only POSIX SYSTEM LIKE LINUX ,MAC OS)
+#start: ./trver start
+#stop: ./trver stop
+
+#start the server through nohub ,which makes the process not quit because of the quiting the terminal. 
+
+
+NODE_ENV=production
+DAEMON="node app.js"
+NAME=trver
+DESC=trver
+PIDFILE="trver.pid"
+
+case "$1" in
+  start)
+     echo "Starting $DESC: "
+          nohup $DAEMON > /dev/null &
+
+    #write the main process into the trver.pid file
+      echo $! > $PIDFILE
+      echo "$NAME."
+               ;;
+  stop)
+     echo "Stopping $DESC: "
+           #read pid value from trver.pid
+           pid = "cat $PIDFILE"
+     #terminate the main process to close the server
+     kill $pid
+             rm $PIDFILE
+     echo "$NAME."
+               ;;
+esac
+
+exit 0

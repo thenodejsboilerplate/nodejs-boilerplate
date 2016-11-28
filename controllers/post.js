@@ -149,15 +149,15 @@ module.exports = {
            const post_id = req.params.post_id;
             Post.remove({ '_id': post_id }, (err)=>{
                   if(err){
-                        req.flash('error',`there is an error when removing the post : ${err}`);
+                        console.log(`there is an error when removing the post : ${err}`);
+                        req.flash('error','删除文章错误！');
                         res.redirect('back');
                   }else{
-                        console.log('User deleted!');
-                        req.flash('success',`The post with id of ${req.params.post_id} deleted successfully `);
+                        console.log(`The post with id of ${req.params.post_id} deleted successfully `);
+                        req.flash('success','文章已删除!');
                         res.redirect('back');
                   }
             });
-
 
      },
 
