@@ -25,7 +25,7 @@ var postSchema = new Schema({
               ref:'User',
           },
           tag_id: [String],          
-          author: { type: String, required: true },
+          //author: { type: String, required: true },
           title: { type: String, required: true, min: 4 },
           category: { type: String, required: true },
           content: { type: String, required: true, min:100 },//,match: /[0-9a-zA-Z_-]/

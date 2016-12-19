@@ -15,8 +15,8 @@ module.exports = {
                  category = req.body.category,
                  intro = req.body.intro;
            const post = new Post();
-           post.author = user.local.username;
-           post.user_id = user._id;
+           //post.author = user.local.username;
+           //post.user_id = user._id;
            post.title = title;
            post.content = content;
            post.intro = intro;
@@ -25,9 +25,7 @@ module.exports = {
            //post.tags = req.body.tags;
            //Post.tags = tags.split(',');
            post.category = category;
-
-
-
+           post.user = user._id;
 
             // let tags = req.body.tags;
             // let tagsArray = tags.split(',');
@@ -40,8 +38,9 @@ module.exports = {
                        req.flash('error',`there is some errors when save the post ${err}`);
                        res.redirect('back');
                   }else{
-                        tagProxy.saveSingle(req,res,post);
+                       tagProxy.saveSingle(req,res,post);
                        console.log(`your post saved successfully: ${post._id}`);
+
                        req.flash('success','Your post saved successfully');
                        res.redirect('/user/profile/'+ user._id);
                  }
