@@ -20,7 +20,10 @@ const mongoose = require('mongoose'),
 // Array
 var postSchema = new Schema({
 
-          user_id: { type: String, required: true },
+          user: {
+              type: mongoose.Schema.Type.ObjectId,
+              ref:'User',
+          },
           tag_id: [String],          
           author: { type: String, required: true },
           title: { type: String, required: true, min: 4 },

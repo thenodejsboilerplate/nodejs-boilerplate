@@ -22,6 +22,9 @@ var userSchema = new Schema({
           email: { type: String, required: true, unique: true,min: 4 },
           password: { type: String, required: true },//,match: /[0-9a-zA-Z_-]/
 
+          posts: [{type: mongoose.Schema.Type.ObjectId, ref:'Post'}],
+
+
           active: {type:Boolean, required: true, default: true },
           logo: {type: String},
           //Properties resetPasswordToken and resetPassword are not part of the above document, because they are set only after password reset is submitted. And since we haven’t specified default values, those properties will not be set when creating a new user.
