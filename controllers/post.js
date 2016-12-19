@@ -25,14 +25,14 @@ module.exports = {
            //post.tags = req.body.tags;
            //Post.tags = tags.split(',');
            post.category = category;
-           post.user = user._id;
+           post.author = user._id;
 
             // let tags = req.body.tags;
             // let tagsArray = tags.split(',');
             // tagsArray.forEach(function(v,i,a){
 
             // });
-           post.save((err)=>{
+           post.save((err,pt)=>{
                  if(err){
                        console.log(err);
                        req.flash('error',`there is some errors when save the post ${err}`);
@@ -40,6 +40,24 @@ module.exports = {
                   }else{
                        tagProxy.saveSingle(req,res,post);
                        console.log(`your post saved successfully: ${post._id}`);
+
+                       console.log(`saved Post is ${JSON.stringify(post)}`);
+
+                       
+                       user.local.posts.push(pt._id);
+                       console.log(`the user posting the article is ${JSON.stringify(user)}`);
+                       user.save(function(err){
+                             if(err){
+                                   console.log(err);
+                                   return;
+                             }
+                       });
+                  //      User.findById(user._id).populate('posts').exec(function(err,user){
+                  //            if(err){
+                  //                  console.log(`error when find user by its id. Error: ${err.message?err.message:err.stack}`);
+                  //            }
+                  //            console.log(`populated user is ${JSON.stringify(user)}`);
+                  //      });
 
                        req.flash('success','Your post saved successfully');
                        res.redirect('/user/profile/'+ user._id);

@@ -20,8 +20,8 @@ const mongoose = require('mongoose'),
 // Array
 var postSchema = new Schema({
 
-          user: {
-              type: mongoose.Schema.Type.ObjectId,
+          author: {
+              type: Schema.Types.ObjectId,
               ref:'User',
           },
           tag_id: [String],          
@@ -85,10 +85,11 @@ postSchema.methods.processPost = post=>{
     });
     return {
         _id:post._id,
-        user_id: post.user_id,
+        // user_id: post.user_id,
+        user: post.author,
         tag_id: post.tag_id,  //an array   
         tags: tagsArray,//array with all post tags   
-        author: post.author,
+        // author: post.author,
         category: post.category,
         title: post.title,
         intro: post.intro,

@@ -27,20 +27,33 @@ module.exports = {
                     //userProxy.getUserById(user_id, theuser=>{
                     console.log(posts);
                     
-                    res.render('home/home', {
-                            title: 'home page',
-                            user: req.user ? req.user.processUser(req.user) : req.user,
-                            //postUser: req.user ? (req.user._id == user_id ? loginedUser : theuser) : theuser,
-                            posts: posts,
-                            page: page,
-                            isFirstPage: (page - 1) == 0,
-                            isLastPage: ((page - 1) * 10 + posts.length) == count,
-                            messages: {
-                                error: req.flash('error'),
-                                success: req.flash('success'),
-                                info: req.flash('info'),
-                            }, // get the user out of session and pass to template
-                    }); 
+                    User.find({}).populate('local.posts').exec(function(err,users){
+                            if(err){
+                                console.log(`error when find user by its id. Error: ${err.message?err.message:err.stack}`);
+                                return;
+                            }
+                            console.log(`populated user is ${JSON.stringify(users)}`);
+
+                            res.render('home/home', {
+                                    title: 'home page',
+                                    user: req.user ? req.user.processUser(req.user) : req.user,
+                                    //postUser: req.user ? (req.user._id == user_id ? loginedUser : theuser) : theuser,
+                                    users: users,
+                                    posts: posts,
+                                    page: page,
+                                    isFirstPage: (page - 1) == 0,
+                                    isLastPage: ((page - 1) * 10 + posts.length) == count,
+                                    messages: {
+                                        error: req.flash('error'),
+                                        success: req.flash('success'),
+                                        info: req.flash('info'),
+                                    }, // get the user out of session and pass to template
+                            }); 
+
+
+                    });
+
+
 
 
                 });	 

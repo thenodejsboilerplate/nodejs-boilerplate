@@ -22,8 +22,7 @@ var userSchema = new Schema({
           email: { type: String, required: true, unique: true,min: 4 },
           password: { type: String, required: true },//,match: /[0-9a-zA-Z_-]/
 
-          posts: [{type: mongoose.Schema.Type.ObjectId, ref:'Post'}],
-
+          posts: [{type: Schema.Types.ObjectId, ref:'Post'}],
 
           active: {type:Boolean, required: true, default: true },
           logo: {type: String},
@@ -136,6 +135,7 @@ userSchema.methods.processUser = user=>{
         username: user.local.username,
         email: user.local.email,
         logo: user.local.logo,
+        posts: user.local.posts,
         active: user.local.active,      
         created_at: moment(user.local.created_at).format('L'),
         updated_at: moment(user.local.updated_at).format('L'),        

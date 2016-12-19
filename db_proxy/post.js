@@ -241,14 +241,15 @@ module.exports = {
                     });  
                 });
                 promis.then(function(count){
-                    Post.find(query).skip((page-1)*10).limit(10).sort({'created_at': -1}).exec((err,posts)=>{
+                    Post.find(query).populate('author').skip((page-1)*10).limit(10).sort({'created_at': -1}).exec((err,posts)=>{
                             if (err) {
                                 reject(err);
-                                
                             }
                             console.log('Posts inthe getTen function is: '+posts);
                             const modifiedPosts = posts.map(post=>{
-                                return post.processPost(post);
+                                let mypost = post.processPost(post);
+                                mypost.author = post.author; 
+                                return mypost;
                             });
 
                             console.log('modifiedPosts: '+modifiedPosts);

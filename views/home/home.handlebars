@@ -17,3 +17,16 @@
 <h2>ALL THE POSTS</h2>
 
     {{> post/postsLoop}}
+
+
+<h2>Users and their posts</h2>
+
+{{#if users}}
+<ul>
+    {{#each users}}
+     {{#each this.local.posts}}
+      <li>{{this.content}}</li>
+     {{/each}}
+    {{/each}}
+</ul>
+{{/if}}

@@ -4,7 +4,7 @@
                                 
                                     <p>{{ title }}</p>
                                     <p class="info" style="font-size:0.5em;line-height:0.1em;">
-                                    Author：<a href="/user/profile/{{user_id}}">{{ author }}</a> | 
+                                    Author：<a href="/user/profile/{{author._id}}">{{ author.local.username }}</a> | 
                                     Time：{{ created_at }} |
                                     Tags:
                                     {{#each tags}}
