@@ -1,8 +1,8 @@
 "use strict";
 const express = require('express'),
       router = express.Router(),
-      user = require('../controllers/user'),
-      auth = require('../middlewares/auth');
+      user = require('../../controllers/user'),
+      auth = require('../../middlewares/auth');
 
 module.exports = function(app,User,passport){
         router.get('/reset/:token', user.getResetToken);
@@ -32,6 +32,6 @@ module.exports = function(app,User,passport){
         router.post('/updateUser',auth.isLoggedIn, user.putUpdateUser(User));        
         router.post('/postSignup', user.postSignup(passport));        
         router.post('/postLogin', user.postLogin(passport));
-        router.post("/process/:year/:month", user.postFileUpload(app));        
+        router.post("/process/:year/:month", user.postFileUpload(app));      //upload images   
         return router;
 }

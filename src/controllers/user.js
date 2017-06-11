@@ -1,7 +1,7 @@
 "use strict";
 const flash        = require('connect-flash'),
-    config  = require('../config/config'),
-    mailService  = require('../lib/email')(config),
+    config  = require('../common/get-config'),
+    mailService  = require('../lib/mail')(config),
     bodyParser   = require('body-parser'),
     formidable = require('formidable'),
     crypto = require('crypto'),
@@ -368,12 +368,12 @@ module.exports = {
 
 		postFileUpload: app=>{
 		       return function(req,res){
-                    let dataDir;
-		            if(app.get('env')=== 'development'){
-		            	dataDir = config.uploadDir.development;
-		            }else{
-		            	dataDir = config.uploadDir.production;
-		            }
+                    let dataDir = config.uploadDir;
+		            // if(app.get('env')=== 'development' || app.get('env')=== 'test'){
+		            	//dataDir = config.uploadDir;
+		            // }else{
+		            // 	dataDir = config.uploadDir.production;
+		            // }
 
 					console.log(dataDir);
 					let photoDir = dataDir + 'logo/';

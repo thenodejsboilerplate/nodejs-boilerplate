@@ -34,9 +34,9 @@ module.exports = {
 				  break;
 				case 'production':
 				   //express-logger support logging loop(duplicate every 24 hours and begin new logs to prevent log files to become big forever)
-				   app.use(require('express-logger')({
-				   	   path: __dirname + '/log/requests.log'
-				   }));
+				//    app.use(require('express-logger')({
+				//    	   path: __dirname + '/log/requests.log'
+				//    }));
 
 				   /**mongoose part**/
 				   mongoose.connect(config.db.mongo.production.url);

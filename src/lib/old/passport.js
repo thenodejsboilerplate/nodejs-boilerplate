@@ -2,8 +2,8 @@
 "use strict";
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var GithubStrategy = require('passport-github2').Strategy;
+// var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+// var GithubStrategy = require('passport-github2').Strategy;
 
 // load the auth variables
 var configAuth = require('../config/auth');
@@ -27,7 +27,7 @@ module.exports = function(passport) {
     //In this example, only the user ID is serialized to the session, keeping the amount of data stored within the session small. When subsequent requests are received, this ID is used to find the user, which will be restored to req.user.
     //essentially it allows you to stay logged-in when navigating between different pages within your application.
     passport.serializeUser(function(user, done) {
-        done(null, user.id);
+        done(null, user._id);
     });
 
     // used to deserialize the user
@@ -78,7 +78,6 @@ module.exports = function(passport) {
                                         // check to see if theres already a user with that email
                                         if (user) {
                                                 return done(null, false, req.flash('error', 'That emailis already taken.'));
-
                                         } else {
                                             if(passwordConfirmation === password){
                                                 // if there is no user with that email
@@ -97,11 +96,6 @@ module.exports = function(passport) {
                                             }else { 
                                                 return done(null, false, req.flash('error', 'Passport does not match!')); 
                                             }
-                                                        
-                                            
-                                                    
-                                                    
-
 
                                         }
 
@@ -167,57 +161,57 @@ module.exports = function(passport) {
     // =========================================================================
     // GOOGLE AUTH==================================================================
     // =========================================================================
-    passport.use(new GoogleStrategy({
+    // passport.use(new GoogleStrategy({
 
-        clientID        : configAuth.googleAuth.clientID,
-        clientSecret    : configAuth.googleAuth.clientSecret,
-        callbackURL     : configAuth.googleAuth.callbackURL,
+    //     clientID        : configAuth.googleAuth.clientID,
+    //     clientSecret    : configAuth.googleAuth.clientSecret,
+    //     callbackURL     : configAuth.googleAuth.callbackURL,
 
-    },
-    function(token, refreshToken, profile, done) {
+    // },
+    // function(token, refreshToken, profile, done) {
 
-        // make the code asynchronous
-        // User.findOne won't fire until we have all our data back from Google
-        process.nextTick(function() {
+    //     // make the code asynchronous
+    //     // User.findOne won't fire until we have all our data back from Google
+    //     process.nextTick(function() {
 
-            // try to find the user based on their google id
-            User.findOne({ 'google.id' : profile.id }, (err, user)=> {
-                if (err){
-                    console.log(err);
-                    return done(err,null);
-                }
+    //         // try to find the user based on their google id
+    //         User.findOne({ 'google.id' : profile.id }, (err, user)=> {
+    //             if (err){
+    //                 console.log(err);
+    //                 return done(err,null);
+    //             }
 
-                if (user) {
+    //             if (user) {
 
-                    // if a user is found, log them in
-                    return done(null, user);
-                } else {
-                    // if the user isnt in our database, create a new user
-                    var newUser          = new User();
+    //                 // if a user is found, log them in
+    //                 return done(null, user);
+    //             } else {
+    //                 // if the user isnt in our database, create a new user
+    //                 var newUser          = new User();
 
-                    // set all of the relevant information
-                    newUser.google.id    = profile.id;
-                    newUser.google.token = token;
-                    newUser.google.name  = profile.displayName;
-                    newUser.google.email = profile.emails[0].value; // pull the first email
-                    newUser.local.username = profile.displayName;
-                    newUser.local.email = profile.emails[0].value;
-                    newUser.local.password = newUser.generateHash(profile.displayName);
-                    // save the user
-                    newUser.save(function(err) {
-                        if (err){
-                            console.log(err);
-                            return done(err,null);
-                        }else{
-                            return done(null, newUser);
-                        }
+    //                 // set all of the relevant information
+    //                 newUser.google.id    = profile.id;
+    //                 newUser.google.token = token;
+    //                 newUser.google.name  = profile.displayName;
+    //                 newUser.google.email = profile.emails[0].value; // pull the first email
+    //                 newUser.local.username = profile.displayName;
+    //                 newUser.local.email = profile.emails[0].value;
+    //                 newUser.local.password = newUser.generateHash(profile.displayName);
+    //                 // save the user
+    //                 newUser.save(function(err) {
+    //                     if (err){
+    //                         console.log(err);
+    //                         return done(err,null);
+    //                     }else{
+    //                         return done(null, newUser);
+    //                     }
                         
-                    });
-                }
-            });
-        });
+    //                 });
+    //             }
+    //         });
+    //     });
 
-    }));
+    // }));
 
 
  /***End of Google Auth***/
@@ -229,70 +223,62 @@ module.exports = function(passport) {
     // Github AUTH===============================================================
     // =========================================================================
     
-    passport.use(new GithubStrategy({
-        clientID        : configAuth.githubAuth.clientID,
-        clientSecret    : configAuth.githubAuth.clientSecret,
-        callbackURL     : configAuth.githubAuth.callbackURL
-      },
-      function(accessToken, refreshToken, profile, done) {
-        //// asynchronous verification, for effect...
-        console.log(profile);
-       process.nextTick(function() {
+    // passport.use(new GithubStrategy({
+    //     clientID        : configAuth.githubAuth.clientID,
+    //     clientSecret    : configAuth.githubAuth.clientSecret,
+    //     callbackURL     : configAuth.githubAuth.callbackURL
+    //   },
+    //   function(accessToken, refreshToken, profile, done) {
+    //     //// asynchronous verification, for effect...
+    //     console.log(profile);
+    //    process.nextTick(function() {
 
-        User.findOne({ 'github.id': profile.id },  (err, user)=> {
+    //     User.findOne({ 'github.id': profile.id },  (err, user)=> {
           
-                if (err){
-                    console.log(err);
-                    return done(err);
-                }
+    //             if (err){
+    //                 console.log(err);
+    //                 return done(err);
+    //             }
 
-                if (user) {
+    //             if (user) {
 
-                    // if a user is found, log them in
-                    return done(null, user);
-                    //return 
+    //                 // if a user is found, log them in
+    //                 return done(null, user);
+    //                 //return 
                     
-                } else {
-                    // if the user isnt in our database, create a new user
-                    var newUser          = new User();
+    //             } else {
+    //                 // if the user isnt in our database, create a new user
+    //                 var newUser          = new User();
 
-                    // set all of the relevant information
-                    newUser.github.id    = profile.id;
-                    newUser.github.token = accessToken;
-                    newUser.github.name  = profile.username;
-                    newUser.local.username = profile.displayName;
-                    newUser.local.email = profile.displayName + '@github.com';
-                    newUser.local.password = newUser.generateHash(profile.displayName);                    //newUser.github.email = profile.emails[0].value; // pull the first email
+    //                 // set all of the relevant information
+    //                 newUser.github.id    = profile.id;
+    //                 newUser.github.token = accessToken;
+    //                 newUser.github.name  = profile.username;
+    //                 newUser.local.username = profile.displayName;
+    //                 newUser.local.email = profile.displayName + '@github.com';
+    //                 newUser.local.password = newUser.generateHash(profile.displayName);                    //newUser.github.email = profile.emails[0].value; // pull the first email
 
-                    // save the user
-                    newUser.save(function(err) {
-                        if (err){
-                            console.log(err);
-                            throw err;
-                        }
-                        return done(null, newUser);
-                    });
-                }
-
-
-
-
-
-        });
-
-       });//process.nextTick
-
-
-      }
-    ));
+    //                 // save the user
+    //                 newUser.save(function(err) {
+    //                     if (err){
+    //                         console.log(err);
+    //                         throw err;
+    //                     }
+    //                     return done(null, newUser);
+    //                 });
+    //             }
 
 
 
 
 
+    //     });
+
+    //    });//process.nextTick
 
 
-
+    //   }
+    // ));
 
 
 

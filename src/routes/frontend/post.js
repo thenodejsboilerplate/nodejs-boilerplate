@@ -1,8 +1,8 @@
 "use strict";
 const express = require('express'),
       router = express.Router(),
-      auth = require('../middlewares/auth'),
-      post = require('../controllers/post');
+      auth = require('../../middlewares/auth'),
+      post = require('../../controllers/post');
 
 router.get('/make', auth.isLoggedIn, post.makeArticle);
 router.post('/post', auth.isLoggedIn, post.postArticle);

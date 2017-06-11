@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-const respond = require('../controllers/respond');
+const respond = require('../../controllers/respond');
 
 //404:not found; 400 wrong request;401 not authorized
 router.get('/success', respond.success);

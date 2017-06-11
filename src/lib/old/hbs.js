@@ -79,8 +79,8 @@ module.exports = function(app){
 	    // Uses multiple partials dirs, templates in "shared/templates/" are shared
 	    // with the client-side of the app (see below).
 	    partialsDir: [
-	        'shared/templates/',
-	        'views/partials/'
+	        // 'shared/templates/',
+	        'partials/'
 	    ]
 	});
 

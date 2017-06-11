@@ -2,7 +2,7 @@
 function startServer(){
 	"use strict";
 
-    const config = require('./config/config');
+    const config = require('./src/config/config');
 
 	const express = require('express');
 	const bodyParser = require('body-parser');
@@ -19,33 +19,31 @@ function startServer(){
 	const cookieParser = require('cookie-parser');
 	const session      = require('express-session');
 
-
-
-
-	require('./lib/passport')(passport); // pass passport for configuration
-	const User = require('./models/User');    
+	require('./src/lib/passport')(passport); // pass passport for configuration
+	const User = require('./src/models/User');    
 
 	const app = express();
 
 	//for logs, db ... in the different context (development or production)
-	const context = require('./common/context').env1(app,mongoose);
+	const context = require('./src/common/context').env1(app,mongoose);
 
     //set app attribute
-    require('./common/set')(app);
+    require('./src/common/set')(app);
+    app.set('views', path.join(__dirname, 'src/views'))
 
-	app.use(express.static(__dirname + '/public'));
+	app.use(express.static(__dirname + '/src/public'));
 	app.use(express.static(__dirname + '/node_modules'));
 	//static中间件可以将一个或多个目录指派为包含静态资源的目录,其中资源不经过任何特殊处理直接发送到客户端,如可放img,css。 设置成功后可以直接指向、img/logo.png,static中间件会返回这个文件并正确设定内容类型
     
 
    //for setting second domain using vhost
-   require('./api/api')(app,express);
-   require('./lib/hbs')(app);
+   // require('./api/api')(app,express);
+   require('./src/lib/hbs')(app);
 
-	app.use(function(req,res,next){
-	    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
-	    next();
-	});
+	// app.use(function(req,res,next){
+	//     res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
+	//     next();
+	// });
 	//我们不希望测试一直进行，只在需要测试时显示，我们准备用用一些中间件在检测查询字符串中的test=1,它必须出现在我们所有路由前
 
 	app.use(cookieParser()); // read cookies (needed for auth)
@@ -58,7 +56,7 @@ function startServer(){
 	// Create express-session and pass it to connect-redis object as parameter. This will initialize it.
 	const redisStore = require('connect-redis')(session);
 	//Then in session middle ware, pass the Redis store information such as host, port and other required parameters.
-	const client = require('./lib/redis');
+	const client = require('./src/lib/redis');
 	app.use(session({
 	    secret: config.session_secret,
 		cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
@@ -99,8 +97,8 @@ function startServer(){
     // 	res.locals.csrfToken = req.csrfToken();
     // 	next();
     // });
-	const routes = require('./routes')(app,passport,User);
-    const autoView = require('./common/autoView')(app);
+	const routes = require('./src/routes/routes')(app,passport,User);
+    // const autoView = require('./src/common/autoView')(app);
 
 	//customize 404 page using middleware
 	app.use(function(req,res,next){
